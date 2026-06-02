@@ -1,0 +1,37 @@
+// /app/api/update-prescription/route.js
+import { NextResponse } from "next/server";
+import connectDB from "@/lib/db";
+import BPPrediction from "@/model/prescriptionModel";
+
+export async function POST(req) {
+  try {
+    await connectDB();
+
+    const body = await req.json();
+    const { id, ...updateData } = body;
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Prescription ID is required" }, { status: 400 });
+    }
+
+    // Update the prescription
+    const updatedPrescription = await BPPrediction.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedPrescription) {
+      return NextResponse.json({ success: false, error: "Prescription not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      data: updatedPrescription,
+      message: "Prescription updated successfully"
+    });
+  } catch (err) {
+    console.error("Error updating prescription:", err);
+    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+  }
+}

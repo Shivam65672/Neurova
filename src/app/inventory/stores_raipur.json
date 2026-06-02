@@ -1,0 +1,1202 @@
+[
+  {
+    "storeId": "STORE001",
+    "name": "HealthPlus Pharmacy 1",
+    "pincode": "492007",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.621759,
+        21.260644
+      ]
+    }
+  },
+  {
+    "storeId": "STORE002",
+    "name": "HealthPlus Pharmacy 2",
+    "pincode": "492019",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.611698,
+        21.266406
+      ]
+    }
+  },
+  {
+    "storeId": "STORE003",
+    "name": "HealthPlus Pharmacy 3",
+    "pincode": "492021",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.573368,
+        21.228995
+      ]
+    }
+  },
+  {
+    "storeId": "STORE004",
+    "name": "HealthPlus Pharmacy 4",
+    "pincode": "492015",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.588052,
+        21.220957
+      ]
+    }
+  },
+  {
+    "storeId": "STORE005",
+    "name": "HealthPlus Pharmacy 5",
+    "pincode": "492007",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.594949,
+        21.224494
+      ]
+    }
+  },
+  {
+    "storeId": "STORE006",
+    "name": "HealthPlus Pharmacy 6",
+    "pincode": "492017",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.577398,
+        21.238784
+      ]
+    }
+  },
+  {
+    "storeId": "STORE007",
+    "name": "HealthPlus Pharmacy 7",
+    "pincode": "492021",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.573755,
+        21.270244
+      ]
+    }
+  },
+  {
+    "storeId": "STORE008",
+    "name": "HealthPlus Pharmacy 8",
+    "pincode": "492018",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.627753,
+        21.232054
+      ]
+    }
+  },
+  {
+    "storeId": "STORE009",
+    "name": "HealthPlus Pharmacy 9",
+    "pincode": "492012",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.626374,
+        21.265444
+      ]
+    }
+  },
+  {
+    "storeId": "STORE010",
+    "name": "HealthPlus Pharmacy 10",
+    "pincode": "492006",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.626536,
+        21.262109
+      ]
+    }
+  },
+  {
+    "storeId": "STORE011",
+    "name": "HealthPlus Pharmacy 11",
+    "pincode": "493441",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.611004,
+        21.255926
+      ]
+    }
+  },
+  {
+    "storeId": "STORE012",
+    "name": "HealthPlus Pharmacy 12",
+    "pincode": "493111",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.573403,
+        21.278211
+      ]
+    }
+  },
+  {
+    "storeId": "STORE013",
+    "name": "HealthPlus Pharmacy 13",
+    "pincode": "493222",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.609198,
+        21.279567
+      ]
+    }
+  },
+  {
+    "storeId": "STORE014",
+    "name": "HealthPlus Pharmacy 14",
+    "pincode": "492007",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.582745,
+        21.254798
+      ]
+    }
+  },
+  {
+    "storeId": "STORE015",
+    "name": "HealthPlus Pharmacy 15",
+    "pincode": "492001",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.579447,
+        21.263489
+      ]
+    }
+  },
+  {
+    "storeId": "STORE016",
+    "name": "HealthPlus Pharmacy 16",
+    "pincode": "493111",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.629669,
+        21.250679
+      ]
+    }
+  },
+  {
+    "storeId": "STORE017",
+    "name": "HealthPlus Pharmacy 17",
+    "pincode": "492014",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.629316,
+        21.260066
+      ]
+    }
+  },
+  {
+    "storeId": "STORE018",
+    "name": "HealthPlus Pharmacy 18",
+    "pincode": "493222",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.609583,
+        21.253576
+      ]
+    }
+  },
+  {
+    "storeId": "STORE019",
+    "name": "HealthPlus Pharmacy 19",
+    "pincode": "492002",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.615657,
+        21.275909
+      ]
+    }
+  },
+  {
+    "storeId": "STORE020",
+    "name": "HealthPlus Pharmacy 20",
+    "pincode": "492012",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.627358,
+        21.261671
+      ]
+    }
+  },
+  {
+    "storeId": "STORE021",
+    "name": "HealthPlus Pharmacy 21",
+    "pincode": "492001",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.61006,
+        21.25543
+      ]
+    }
+  },
+  {
+    "storeId": "STORE022",
+    "name": "HealthPlus Pharmacy 22",
+    "pincode": "492003",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.624061,
+        21.244173
+      ]
+    }
+  },
+  {
+    "storeId": "STORE023",
+    "name": "HealthPlus Pharmacy 23",
+    "pincode": "492006",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.585561,
+        21.225786
+      ]
+    }
+  },
+  {
+    "storeId": "STORE024",
+    "name": "HealthPlus Pharmacy 24",
+    "pincode": "492020",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.587676,
+        21.239871
+      ]
+    }
+  },
+  {
+    "storeId": "STORE025",
+    "name": "HealthPlus Pharmacy 25",
+    "pincode": "492015",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.606931,
+        21.27563
+      ]
+    }
+  },
+  {
+    "storeId": "STORE026",
+    "name": "HealthPlus Pharmacy 26",
+    "pincode": "492001",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.581357,
+        21.252428
+      ]
+    }
+  },
+  {
+    "storeId": "STORE027",
+    "name": "HealthPlus Pharmacy 27",
+    "pincode": "492015",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.591338,
+        21.247634
+      ]
+    }
+  },
+  {
+    "storeId": "STORE028",
+    "name": "HealthPlus Pharmacy 28",
+    "pincode": "492008",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.583486,
+        21.247734
+      ]
+    }
+  },
+  {
+    "storeId": "STORE029",
+    "name": "HealthPlus Pharmacy 29",
+    "pincode": "492009",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.629189,
+        21.23454
+      ]
+    }
+  },
+  {
+    "storeId": "STORE030",
+    "name": "HealthPlus Pharmacy 30",
+    "pincode": "493111",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.585876,
+        21.222958
+      ]
+    }
+  },
+  {
+    "storeId": "STORE031",
+    "name": "HealthPlus Pharmacy 31",
+    "pincode": "493225",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.587402,
+        21.245877
+      ]
+    }
+  },
+  {
+    "storeId": "STORE032",
+    "name": "HealthPlus Pharmacy 32",
+    "pincode": "493111",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.58302,
+        21.234595
+      ]
+    }
+  },
+  {
+    "storeId": "STORE033",
+    "name": "HealthPlus Pharmacy 33",
+    "pincode": "492006",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.612528,
+        21.244247
+      ]
+    }
+  },
+  {
+    "storeId": "STORE034",
+    "name": "HealthPlus Pharmacy 34",
+    "pincode": "492014",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.586798,
+        21.264783
+      ]
+    }
+  },
+  {
+    "storeId": "STORE035",
+    "name": "HealthPlus Pharmacy 35",
+    "pincode": "492010",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.594309,
+        21.239829
+      ]
+    }
+  },
+  {
+    "storeId": "STORE036",
+    "name": "HealthPlus Pharmacy 36",
+    "pincode": "492004",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.624324,
+        21.240948
+      ]
+    }
+  },
+  {
+    "storeId": "STORE037",
+    "name": "HealthPlus Pharmacy 37",
+    "pincode": "492003",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.615269,
+        21.250114
+      ]
+    }
+  },
+  {
+    "storeId": "STORE038",
+    "name": "HealthPlus Pharmacy 38",
+    "pincode": "492003",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.617958,
+        21.274266
+      ]
+    }
+  },
+  {
+    "storeId": "STORE039",
+    "name": "HealthPlus Pharmacy 39",
+    "pincode": "492006",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.629396,
+        21.232346
+      ]
+    }
+  },
+  {
+    "storeId": "STORE040",
+    "name": "HealthPlus Pharmacy 40",
+    "pincode": "492008",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.63002,
+        21.241702
+      ]
+    }
+  },
+  {
+    "storeId": "STORE041",
+    "name": "HealthPlus Pharmacy 41",
+    "pincode": "492020",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.632057,
+        21.247623
+      ]
+    }
+  },
+  {
+    "storeId": "STORE042",
+    "name": "HealthPlus Pharmacy 42",
+    "pincode": "492007",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.596741,
+        21.224603
+      ]
+    }
+  },
+  {
+    "storeId": "STORE043",
+    "name": "HealthPlus Pharmacy 43",
+    "pincode": "493225",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.598945,
+        21.226567
+      ]
+    }
+  },
+  {
+    "storeId": "STORE044",
+    "name": "HealthPlus Pharmacy 44",
+    "pincode": "493111",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.581781,
+        21.237311
+      ]
+    }
+  },
+  {
+    "storeId": "STORE045",
+    "name": "HealthPlus Pharmacy 45",
+    "pincode": "492017",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.607522,
+        21.275481
+      ]
+    }
+  },
+  {
+    "storeId": "STORE046",
+    "name": "HealthPlus Pharmacy 46",
+    "pincode": "493441",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.631485,
+        21.243941
+      ]
+    }
+  },
+  {
+    "storeId": "STORE047",
+    "name": "HealthPlus Pharmacy 47",
+    "pincode": "492013",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.624337,
+        21.252833
+      ]
+    }
+  },
+  {
+    "storeId": "STORE048",
+    "name": "HealthPlus Pharmacy 48",
+    "pincode": "492005",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.58107,
+        21.268466
+      ]
+    }
+  },
+  {
+    "storeId": "STORE049",
+    "name": "HealthPlus Pharmacy 49",
+    "pincode": "493441",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.622432,
+        21.250117
+      ]
+    }
+  },
+  {
+    "storeId": "STORE050",
+    "name": "HealthPlus Pharmacy 50",
+    "pincode": "492006",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.621922,
+        21.275509
+      ]
+    }
+  },
+  {
+    "storeId": "STORE051",
+    "name": "HealthPlus Pharmacy 51",
+    "pincode": "492007",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.59781,
+        21.263725
+      ]
+    }
+  },
+  {
+    "storeId": "STORE052",
+    "name": "HealthPlus Pharmacy 52",
+    "pincode": "492018",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.627294,
+        21.258907
+      ]
+    }
+  },
+  {
+    "storeId": "STORE053",
+    "name": "HealthPlus Pharmacy 53",
+    "pincode": "493111",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.583106,
+        21.265432
+      ]
+    }
+  },
+  {
+    "storeId": "STORE054",
+    "name": "HealthPlus Pharmacy 54",
+    "pincode": "492014",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.594651,
+        21.230851
+      ]
+    }
+  },
+  {
+    "storeId": "STORE055",
+    "name": "HealthPlus Pharmacy 55",
+    "pincode": "492004",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.60047,
+        21.237991
+      ]
+    }
+  },
+  {
+    "storeId": "STORE056",
+    "name": "HealthPlus Pharmacy 56",
+    "pincode": "492003",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.617918,
+        21.258138
+      ]
+    }
+  },
+  {
+    "storeId": "STORE057",
+    "name": "HealthPlus Pharmacy 57",
+    "pincode": "492001",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.616049,
+        21.247303
+      ]
+    }
+  },
+  {
+    "storeId": "STORE058",
+    "name": "HealthPlus Pharmacy 58",
+    "pincode": "492013",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.616761,
+        21.265623
+      ]
+    }
+  },
+  {
+    "storeId": "STORE059",
+    "name": "HealthPlus Pharmacy 59",
+    "pincode": "492016",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.578723,
+        21.224232
+      ]
+    }
+  },
+  {
+    "storeId": "STORE060",
+    "name": "HealthPlus Pharmacy 60",
+    "pincode": "492020",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.61464,
+        21.233828
+      ]
+    }
+  },
+  {
+    "storeId": "STORE061",
+    "name": "HealthPlus Pharmacy 61",
+    "pincode": "493111",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.574168,
+        21.229196
+      ]
+    }
+  },
+  {
+    "storeId": "STORE062",
+    "name": "HealthPlus Pharmacy 62",
+    "pincode": "492014",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.600147,
+        21.225872
+      ]
+    }
+  },
+  {
+    "storeId": "STORE063",
+    "name": "HealthPlus Pharmacy 63",
+    "pincode": "493222",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.61926,
+        21.219967
+      ]
+    }
+  },
+  {
+    "storeId": "STORE064",
+    "name": "HealthPlus Pharmacy 64",
+    "pincode": "492017",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.611834,
+        21.256832
+      ]
+    }
+  },
+  {
+    "storeId": "STORE065",
+    "name": "HealthPlus Pharmacy 65",
+    "pincode": "493225",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.631675,
+        21.223604
+      ]
+    }
+  },
+  {
+    "storeId": "STORE066",
+    "name": "HealthPlus Pharmacy 66",
+    "pincode": "492008",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.589902,
+        21.260369
+      ]
+    }
+  },
+  {
+    "storeId": "STORE067",
+    "name": "HealthPlus Pharmacy 67",
+    "pincode": "493111",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.578817,
+        21.22034
+      ]
+    }
+  },
+  {
+    "storeId": "STORE068",
+    "name": "HealthPlus Pharmacy 68",
+    "pincode": "492008",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.585541,
+        21.277821
+      ]
+    }
+  },
+  {
+    "storeId": "STORE069",
+    "name": "HealthPlus Pharmacy 69",
+    "pincode": "492008",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.619189,
+        21.233222
+      ]
+    }
+  },
+  {
+    "storeId": "STORE070",
+    "name": "HealthPlus Pharmacy 70",
+    "pincode": "492021",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.627526,
+        21.221536
+      ]
+    }
+  },
+  {
+    "storeId": "STORE071",
+    "name": "HealthPlus Pharmacy 71",
+    "pincode": "492020",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.628118,
+        21.260227
+      ]
+    }
+  },
+  {
+    "storeId": "STORE072",
+    "name": "HealthPlus Pharmacy 72",
+    "pincode": "493225",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.582399,
+        21.227201
+      ]
+    }
+  },
+  {
+    "storeId": "STORE073",
+    "name": "HealthPlus Pharmacy 73",
+    "pincode": "492016",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.620351,
+        21.272612
+      ]
+    }
+  },
+  {
+    "storeId": "STORE074",
+    "name": "HealthPlus Pharmacy 74",
+    "pincode": "492014",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.572555,
+        21.273106
+      ]
+    }
+  },
+  {
+    "storeId": "STORE075",
+    "name": "HealthPlus Pharmacy 75",
+    "pincode": "492004",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.604715,
+        21.236927
+      ]
+    }
+  },
+  {
+    "storeId": "STORE076",
+    "name": "HealthPlus Pharmacy 76",
+    "pincode": "492019",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.586574,
+        21.246627
+      ]
+    }
+  },
+  {
+    "storeId": "STORE077",
+    "name": "HealthPlus Pharmacy 77",
+    "pincode": "493441",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.586027,
+        21.277587
+      ]
+    }
+  },
+  {
+    "storeId": "STORE078",
+    "name": "HealthPlus Pharmacy 78",
+    "pincode": "492010",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.588861,
+        21.279522
+      ]
+    }
+  },
+  {
+    "storeId": "STORE079",
+    "name": "HealthPlus Pharmacy 79",
+    "pincode": "492012",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.619816,
+        21.257101
+      ]
+    }
+  },
+  {
+    "storeId": "STORE080",
+    "name": "HealthPlus Pharmacy 80",
+    "pincode": "492018",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.615299,
+        21.267562
+      ]
+    }
+  },
+  {
+    "storeId": "STORE081",
+    "name": "HealthPlus Pharmacy 81",
+    "pincode": "492012",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.622368,
+        21.267292
+      ]
+    }
+  },
+  {
+    "storeId": "STORE082",
+    "name": "HealthPlus Pharmacy 82",
+    "pincode": "492008",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.57988,
+        21.239896
+      ]
+    }
+  },
+  {
+    "storeId": "STORE083",
+    "name": "HealthPlus Pharmacy 83",
+    "pincode": "492004",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.609916,
+        21.272157
+      ]
+    }
+  },
+  {
+    "storeId": "STORE084",
+    "name": "HealthPlus Pharmacy 84",
+    "pincode": "492010",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.59404,
+        21.231546
+      ]
+    }
+  },
+  {
+    "storeId": "STORE085",
+    "name": "HealthPlus Pharmacy 85",
+    "pincode": "492020",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.580478,
+        21.220461
+      ]
+    }
+  },
+  {
+    "storeId": "STORE086",
+    "name": "HealthPlus Pharmacy 86",
+    "pincode": "492014",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.626298,
+        21.226545
+      ]
+    }
+  },
+  {
+    "storeId": "STORE087",
+    "name": "HealthPlus Pharmacy 87",
+    "pincode": "492005",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.598906,
+        21.241356
+      ]
+    }
+  },
+  {
+    "storeId": "STORE088",
+    "name": "HealthPlus Pharmacy 88",
+    "pincode": "492007",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.616845,
+        21.277634
+      ]
+    }
+  },
+  {
+    "storeId": "STORE089",
+    "name": "HealthPlus Pharmacy 89",
+    "pincode": "492013",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.613866,
+        21.254824
+      ]
+    }
+  },
+  {
+    "storeId": "STORE090",
+    "name": "HealthPlus Pharmacy 90",
+    "pincode": "492017",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.598096,
+        21.241285
+      ]
+    }
+  },
+  {
+    "storeId": "STORE091",
+    "name": "HealthPlus Pharmacy 91",
+    "pincode": "493441",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.575667,
+        21.264677
+      ]
+    }
+  },
+  {
+    "storeId": "STORE092",
+    "name": "HealthPlus Pharmacy 92",
+    "pincode": "492010",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.625948,
+        21.24371
+      ]
+    }
+  },
+  {
+    "storeId": "STORE093",
+    "name": "HealthPlus Pharmacy 93",
+    "pincode": "492021",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.619126,
+        21.271706
+      ]
+    }
+  },
+  {
+    "storeId": "STORE094",
+    "name": "HealthPlus Pharmacy 94",
+    "pincode": "493441",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.590764,
+        21.25323
+      ]
+    }
+  },
+  {
+    "storeId": "STORE095",
+    "name": "HealthPlus Pharmacy 95",
+    "pincode": "493225",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.605999,
+        21.232851
+      ]
+    }
+  },
+  {
+    "storeId": "STORE096",
+    "name": "HealthPlus Pharmacy 96",
+    "pincode": "493111",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.579732,
+        21.267033
+      ]
+    }
+  },
+  {
+    "storeId": "STORE097",
+    "name": "HealthPlus Pharmacy 97",
+    "pincode": "493111",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.600986,
+        21.249565
+      ]
+    }
+  },
+  {
+    "storeId": "STORE098",
+    "name": "HealthPlus Pharmacy 98",
+    "pincode": "492012",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.595895,
+        21.235685
+      ]
+    }
+  },
+  {
+    "storeId": "STORE099",
+    "name": "HealthPlus Pharmacy 99",
+    "pincode": "492003",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.587571,
+        21.257738
+      ]
+    }
+  },
+  {
+    "storeId": "STORE100",
+    "name": "HealthPlus Pharmacy 100",
+    "pincode": "492014",
+    "location": {
+      "type": "Point",
+      "coordinates": [
+        81.620597,
+        21.274706
+      ]
+    }
+  }
+]
