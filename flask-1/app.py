@@ -11,13 +11,13 @@
 # from geopy.distance import geodesic
 
 # with open(
-#     "C:\\Users\\ujjwa\\OneDrive\\Desktop\\CodeUtsav\\synapse\\flask-1\\inventory\\medicines.json",
+#     "C:\\Users\\ujjwa\\OneDrive\\Desktop\\CodeUtsav\\neurova\\flask-1\\inventory\\medicines.json",
 #     "r",
 # ) as f:
 #     medicines_db = json.load(f)
 
 # with open(
-#     "C:\\Users\\ujjwa\\OneDrive\\Desktop\\CodeUtsav\\synapse\\flask-1\\inventory\\stores_raipur.json",
+#     "C:\\Users\\ujjwa\\OneDrive\\Desktop\\CodeUtsav\\neurova\\flask-1\\inventory\\stores_raipur.json",
 #     "r",
 # ) as f:
 #     stores_db = json.load(f)
@@ -393,13 +393,13 @@ app = Flask(__name__)
 CORS(app)
 # Load medicines and stores
 with open(
-    "C:\\Users\\ujjwa\\OneDrive\\Desktop\\CodeUtsav\\synapse\\flask-1\\inventory\\medicines.json",
+    "C:\\Users\\ujjwa\\OneDrive\\Desktop\\CodeUtsav\\neurova\\flask-1\\inventory\\medicines.json",
     "r",
 ) as f:
     medicines_db = json.load(f)
 
 with open(
-    "C:\\Users\\ujjwa\\OneDrive\\Desktop\\CodeUtsav\\synapse\\flask-1\\inventory\\stores_raipur.json",
+    "C:\\Users\\ujjwa\\OneDrive\\Desktop\\CodeUtsav\\neurova\\flask-1\\inventory\\stores_raipur.json",
     "r",
 ) as f:
     stores_db = json.load(f)

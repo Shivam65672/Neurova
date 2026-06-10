@@ -308,7 +308,7 @@ const PrescriptionDocument = ({ data }) => {
       <Page size="A4" style={styles.page}>
         {/* Watermark */}
         <View style={styles.watermark}>
-          <Text>SYNAPSE</Text>
+          <Text>NEUROVA</Text>
         </View>
 
         {/* Header */}

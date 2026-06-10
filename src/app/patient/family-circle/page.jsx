@@ -19,60 +19,35 @@ export default function FamilyCirclePage() {
   });
 
   useEffect(() => {
-    // Load family members from localStorage (demo)
-    const stored = localStorage.getItem('familyCircle');
-    if (stored) {
-      setFamilyMembers(JSON.parse(stored));
-    } else {
-      // Demo family members
-      const demoFamily = [
-        {
-          id: '1',
-          name: 'Sarah Wilson',
-          relationship: 'Spouse',
-          email: 'sarah.w@email.com',
-          phone: '+1 (555) 123-4567',
-          photo: '👩',
-          isEmergencyContact: true,
-          canViewVitals: true,
-          addedDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toLocaleDateString()
-        },
-        {
-          id: '2',
-          name: 'Michael Wilson',
-          relationship: 'Son',
-          email: 'michael.w@email.com',
-          phone: '+1 (555) 234-5678',
-          photo: '👨',
-          isEmergencyContact: true,
-          canViewVitals: true,
-          addedDate: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toLocaleDateString()
-        },
-        {
-          id: '3',
-          name: 'Dr. Emily Chen',
-          relationship: 'Primary Doctor',
-          email: 'dr.chen@hospital.com',
-          phone: '+1 (555) 345-6789',
-          photo: '👩‍⚕️',
-          isEmergencyContact: true,
-          canViewVitals: true,
-          addedDate: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toLocaleDateString()
-        }
-      ];
-      setFamilyMembers(demoFamily);
-      localStorage.setItem('familyCircle', JSON.stringify(demoFamily));
-    }
-  }, []);
+    const fetchFamilyMembers = async () => {
+      if (!user?.id) return;
 
-  const handleAddMember = () => {
+      try {
+        const response = await fetch(
+          `/api/family-members?clerkId=${user.id}`
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+          setFamilyMembers(data.members);
+        }
+      } catch (error) {
+        console.error('Error fetching family members:', error);
+      }
+    };
+
+    fetchFamilyMembers();
+  }, [user]);
+
+  const handleAddMember = async () => {
     if (!newMember.name || !newMember.relationship) {
       alert('Please fill in required fields');
       return;
     }
 
     const member = {
-      id: Date.now().toString(),
+      clerkId: user.id,
       ...newMember,
       photo: getEmojiForRelationship(newMember.relationship),
       isEmergencyContact: true,
@@ -80,12 +55,32 @@ export default function FamilyCirclePage() {
       addedDate: new Date().toLocaleDateString()
     };
 
-    const updated = [...familyMembers, member];
-    setFamilyMembers(updated);
-    localStorage.setItem('familyCircle', JSON.stringify(updated));
-    
-    setShowAddModal(false);
-    setNewMember({ name: '', relationship: '', email: '', phone: '' });
+    try {
+      const response = await fetch('/api/family-members', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(member),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setFamilyMembers(prev => [...prev, data.member]);
+
+        setShowAddModal(false);
+
+        setNewMember({
+          name: '',
+          relationship: '',
+          email: '',
+          phone: '',
+        });
+      }
+    } catch (error) {
+      console.error('Error adding member:', error);
+    }
   };
 
   const getEmojiForRelationship = (relationship) => {
@@ -104,20 +99,30 @@ export default function FamilyCirclePage() {
     return map[relationship] || '👤';
   };
 
-  const removeMember = (id) => {
+  const removeMember = async (id) => {
     if (confirm('Remove this member from your Family Circle?')) {
-      const updated = familyMembers.filter(m => m.id !== id);
-      setFamilyMembers(updated);
-      localStorage.setItem('familyCircle', JSON.stringify(updated));
+      try {
+        await fetch(`/api/family-members?id=${id}`, {
+          method: 'DELETE',
+        });
+
+        setFamilyMembers(prev =>
+          prev.filter(member => member._id !== id)
+        );
+      } catch (error) {
+        console.error('Error removing member:', error);
+      }
     }
   };
 
   const toggleEmergencyContact = (id) => {
-    const updated = familyMembers.map(m => 
-      m.id === id ? { ...m, isEmergencyContact: !m.isEmergencyContact } : m
+    const updated = familyMembers.map(m =>
+      m._id === id
+        ? { ...m, isEmergencyContact: !m.isEmergencyContact }
+        : m
     );
+
     setFamilyMembers(updated);
-    localStorage.setItem('familyCircle', JSON.stringify(updated));
   };
 
   return (
@@ -197,7 +202,7 @@ export default function FamilyCirclePage() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {familyMembers.map((member) => (
               <div
-                key={member.id}
+                key={member._id}
                 className="group relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 transition-all hover:border-teal-500/50 hover:shadow-lg hover:shadow-teal-500/10"
               >
                 {/* Emergency Badge */}
@@ -246,17 +251,16 @@ export default function FamilyCirclePage() {
 
                 <div className="mt-4 flex gap-2">
                   <button
-                    onClick={() => toggleEmergencyContact(member.id)}
-                    className={`flex-1 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
-                      member.isEmergencyContact
-                        ? 'bg-red-500/20 text-red-400 ring-1 ring-red-500/30 hover:bg-red-500/30'
-                        : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
-                    }`}
+                    onClick={() => toggleEmergencyContact(member._id)}
+                    className={`flex-1 rounded-lg px-3 py-2 text-xs font-medium transition-all ${member.isEmergencyContact
+                      ? 'bg-red-500/20 text-red-400 ring-1 ring-red-500/30 hover:bg-red-500/30'
+                      : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                      }`}
                   >
                     {member.isEmergencyContact ? '🚨 Emergency' : 'Set Emergency'}
                   </button>
                   <button
-                    onClick={() => removeMember(member.id)}
+                    onClick={() => removeMember(member._id)}
                     className="rounded-lg bg-zinc-800 px-3 py-2 text-xs text-zinc-400 transition-all hover:bg-red-500/20 hover:text-red-400"
                   >
                     Remove
@@ -269,7 +273,7 @@ export default function FamilyCirclePage() {
           {/* Emergency SOS Button - Floating */}
           <div className="fixed bottom-8 right-8 z-50">
             <button
-              onClick={() => router.push('/patient/emergency-sos')}
+              onClick={() => router.push('/patient/family-circle/emergency-sos')}
               className="group relative flex h-20 w-20 items-center justify-center rounded-full bg-linear-to-br from-red-500 to-orange-500 text-3xl shadow-2xl shadow-red-500/50 transition-all hover:scale-110 hover:shadow-red-500/70 active:scale-95"
             >
               <span className="animate-pulse">🚨</span>

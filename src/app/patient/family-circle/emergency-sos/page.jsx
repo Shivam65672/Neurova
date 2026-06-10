@@ -1,5 +1,5 @@
 'use client';
-
+import { useUser } from "@clerk/nextjs";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import UserNav from '@/components/UserNav';
@@ -14,39 +14,37 @@ export default function EmergencySOSPage() {
   const [sosActive, setSosActive] = useState(false);
   const [countdown, setCountdown] = useState(5);
   const [showCancelButton, setShowCancelButton] = useState(true);
+  const { user } = useUser();
 
-  useEffect(() => {
-    // Get current location
-    setLoadingLocation(true);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy
-          });
-          setLoadingLocation(false);
-        },
-        (error) => {
-          console.error('Location error:', error);
-          setLocation({
-            latitude: 28.6139, // Demo location (Delhi)
-            longitude: 77.2090,
-            accuracy: 20
-          });
-          setLoadingLocation(false);
+const [emergencyContacts,setEmergencyContacts] = useState([]);
+
+ useEffect(()=>{
+
+    if(!user?.id) return;
+
+    const loadContacts=async()=>{
+
+        const res=await fetch(
+            `/api/family-members?clerkId=${user.id}`
+        );
+
+        const data=await res.json();
+
+        if(data.success){
+
+            setEmergencyContacts(
+                data.members.filter(
+                    m=>m.isEmergencyContact
+                )
+            );
+
         }
-      );
-    } else {
-      setLocation({
-        latitude: 28.6139,
-        longitude: 77.2090,
-        accuracy: 20
-      });
-      setLoadingLocation(false);
+
     }
-  }, []);
+
+    loadContacts();
+
+},[user]);
 
   useEffect(() => {
     if (sosActive && countdown > 0 && showCancelButton) {
@@ -70,43 +68,44 @@ export default function EmergencySOSPage() {
     setShowCancelButton(true);
   };
 
-  const sendEmergencyAlert = () => {
-    // Get family members
-    const familyCircle = JSON.parse(localStorage.getItem('familyCircle') || '[]');
-    const emergencyContacts = familyCircle.filter(m => m.isEmergencyContact);
+  const sendEmergencyAlert = async () => {
 
-    // Get latest vitals (demo data)
     const latestVitals = {
-      bp: '185/122',
-      heartRate: '112 bpm',
-      timestamp: new Date().toLocaleTimeString()
+        bp: "185/122",
+        heartRate: "112 bpm",
+        timestamp: new Date().toLocaleTimeString()
     };
 
-    // Simulate sending alerts
-    console.log('🚨 EMERGENCY ALERT SENT!');
-    console.log('Emergency Contacts:', emergencyContacts);
-    console.log('Location:', location);
-    console.log('Vitals:', latestVitals);
-    console.log('Patient:', profile);
+    try {
 
-    // Store alert in localStorage for demo
-    const alert = {
-      id: Date.now(),
-      timestamp: new Date().toISOString(),
-      location,
-      vitals: latestVitals,
-      patient: {
-        name: profile?.name || 'Patient',
-        age: profile?.age || 0,
-      },
-      contacts: emergencyContacts,
-      status: 'active'
-    };
+        const response = await fetch("/api/emergency-alert", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
 
-    const alerts = JSON.parse(localStorage.getItem('emergencyAlerts') || '[]');
-    alerts.unshift(alert);
-    localStorage.setItem('emergencyAlerts', JSON.stringify(alerts));
-  };
+                patientId: user.id,
+
+                contacts: emergencyContacts,
+
+                location,
+
+                vitals: latestVitals,
+
+                timestamp: new Date()
+
+            })
+        });
+
+        const data = await response.json();
+
+        console.log(data);
+
+    } catch (err) {
+        console.log(err);
+    }
+};
 
   const getMapUrl = () => {
     if (!location) return '';
@@ -169,14 +168,10 @@ export default function EmergencySOSPage() {
 
                 {/* Emergency Contacts Preview */}
                 <div className="mb-8 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6">
-                  <h3 className="mb-4 text-lg font-bold text-white">Will notify {
-                    JSON.parse(localStorage.getItem('familyCircle') || '[]').filter(m => m.isEmergencyContact).length
-                  } Emergency Contacts:</h3>
+                  <h3 className="mb-4 text-lg font-bold text-white">Will notify {emergencyContacts.length} Emergency Contacts:</h3>
                   <div className="flex flex-wrap justify-center gap-4">
-                    {JSON.parse(localStorage.getItem('familyCircle') || '[]')
-                      .filter(m => m.isEmergencyContact)
-                      .map((member) => (
-                        <div key={member.id} className="flex items-center gap-2 rounded-lg bg-zinc-800 px-4 py-2">
+                    {emergencyContacts.map(member=> (
+                        <div key={member._id} className="flex items-center gap-2 rounded-lg bg-zinc-800 px-4 py-2">
                           <span className="text-2xl">{member.photo}</span>
                           <div className="text-left">
                             <p className="text-sm font-semibold text-white">{member.name}</p>
@@ -185,7 +180,7 @@ export default function EmergencySOSPage() {
                         </div>
                       ))}
                   </div>
-                  {JSON.parse(localStorage.getItem('familyCircle') || '[]').filter(m => m.isEmergencyContact).length === 0 && (
+                  {emergencyContacts.filter(m => m.isEmergencyContact).length === 0 && (
                     <p className="text-sm text-zinc-500">
                       No emergency contacts set. <button onClick={() => router.push('/patient/family-circle')} className="text-teal-400 hover:underline">Add family members</button>
                     </p>
@@ -294,10 +289,10 @@ export default function EmergencySOSPage() {
                           <span>📞</span> Notified Contacts
                         </h3>
                         <div className="space-y-2">
-                          {JSON.parse(localStorage.getItem('familyCircle') || '[]')
+                          {emergencyContacts
                             .filter(m => m.isEmergencyContact)
                             .map((member) => (
-                              <div key={member.id} className="flex items-center justify-between rounded-lg bg-zinc-800 p-3">
+                              <div key={member._id} className="flex items-center justify-between rounded-lg bg-zinc-800 p-3">
                                 <div className="flex items-center gap-3">
                                   <span className="text-2xl">{member.photo}</span>
                                   <div>

@@ -12,7 +12,7 @@ const connectDB = async()=>{
     mongoose.connection.on('error', (err)=>{
         console.error('🔴 DB Connection Error:', err);
     })
-    await mongoose.connect(`${process.env.MONGODB_URI}/Synapse`)
+    await mongoose.connect(`${process.env.MONGODB_URI}/Neurova`)
 }
 
 export default connectDB;

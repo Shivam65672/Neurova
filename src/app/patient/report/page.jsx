@@ -42,10 +42,10 @@ export default function ReportPage() {
           qualification: "MBBS, MD",
           regNumber: "MCI-12345678",
           specialization: "General Physician",
-          hospital: "Synapse Healthcare Center",
+          hospital: "Neurova Healthcare Center",
           address: "Healthcare Plaza, India",
           phone: "+91 98765 43210",
-          email: "doctor@synapse.health",
+          email: "doctor@neurova.health",
         },
         patient: {
           name: patientProfile?.name || "Patient",

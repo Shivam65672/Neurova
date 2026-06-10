@@ -14,8 +14,7 @@ export async function POST(req) {
         // Fetch profile from backend using a hardcoded base URL
         const HARD_CODED_BASE_URL = "http://localhost:3000"; // <-- Replace with your backend URL
         const profileRes = await fetch(
-          `${HARD_CODED_BASE_URL}/api/user/profile?clerkUserId=${
-            formData.clerkUserId || ""
+          `${HARD_CODED_BASE_URL}/api/user/profile?clerkUserId=${formData.clerkUserId || ""
           }`
         );
 
@@ -49,6 +48,7 @@ export async function POST(req) {
       Diabetes: formData.Diabetes ?? userProfile.diabetic ?? false,
       Health: formData.Health || userProfile.health || "Fair",
       date: formData.date || new Date().toISOString().split("T")[0],
+      timestamp: new Date().toISOString(),
       pulse: formData.pulse || 72,
     };
 
@@ -72,6 +72,110 @@ export async function POST(req) {
     return new Response(
       JSON.stringify({ status: "error", message: error.message }),
       { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+}
+
+export async function GET(req) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const clerkId = searchParams.get("clerkId");
+
+    const filePath = path.join(process.cwd(), "bp_readings.csv");
+
+    if (!fs.existsSync(filePath)) {
+      return new Response(
+        JSON.stringify({
+          success: true,
+          readings: [],
+        }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
+    const file = fs.readFileSync(filePath, "utf8");
+
+    const lines = file.trim().split("\n");
+
+    if (lines.length <= 1) {
+      return new Response(
+        JSON.stringify({
+          success: true,
+          readings: [],
+        }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
+    const headers = lines[0].split(",");
+
+    const readings = lines
+      .slice(1)
+      .map((line, index) => {
+        const values = line.split(",");
+
+        const obj = {};
+
+        headers.forEach((header, i) => {
+          obj[header] = values[i];
+        });
+
+        return {
+          id: index + 1,
+          clerkId: obj.patient_id,
+          systolic: Number(obj.systolic),
+          diastolic: Number(obj.diastolic),
+          date: obj.date,
+          timestamp: obj.timestamp,
+          pulse: Number(obj.pulse),
+          status:
+            Number(obj.systolic) >= 140 || Number(obj.diastolic) >= 90
+              ? "high"
+              : Number(obj.systolic) >= 120 || Number(obj.diastolic) >= 80
+                ? "elevated"
+                : "normal",
+        };
+      })
+      .filter((reading) =>
+        clerkId ? reading.clerkId === clerkId : true
+      );
+    
+    return new Response(
+      JSON.stringify({
+        success: true,
+        readings,
+      }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  } catch (error) {
+    console.error(error);
+
+    return new Response(
+      JSON.stringify({
+        success: false,
+        message: error.message,
+      }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
   }
 }

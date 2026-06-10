@@ -21,32 +21,60 @@ export default function BPTracker() {
 
   // Fetch CSV data on component mount
   useEffect(() => {
-    async function fetchReadings() {
+    if (!isLoaded || !user?.id) return;
+
+    const fetchReadings = async () => {
       try {
-        const res = await fetch('/api/load-csv');
+        const res = await fetch(`/api/bp-readings?clerkId=${user.id}`);
         const data = await res.json();
 
         if (data.success) {
-          // Already sorted descending in backend
-          setReadings([...data.data].reverse());
-
+          setReadings(data.readings);
         } else {
-          console.error('Failed to load BP readings:', data.error);
+          console.error("Failed to load BP readings:", data.error);
         }
       } catch (err) {
-        console.error('Error fetching BP readings:', err);
+        console.error("Error fetching BP readings:", err);
       }
-    }
+    };
 
     fetchReadings();
-  }, []);
+  }, [isLoaded, user?.id]);
 
   // Chart data: reverse to show oldest → newest
-  const chartData = [...readings].slice().reverse().map(r => ({
-    date: r.date.slice(5), // MM-DD
-    systolic: r.systolic,
-    diastolic: r.diastolic,
-  }));
+  const chartData = [...readings]
+    .map((r) => {
+      const d = new Date(r.timestamp);
+
+      return {
+        // unique x-axis key
+        x: r.timestamp,
+
+        // x-axis label (dd-mm)
+        date:
+          String(d.getDate()).padStart(2, "0") +
+          "-" +
+          String(d.getMonth() + 1).padStart(2, "0"),
+
+        // tooltip date (dd-mm-yyyy)
+        fullDate:
+          String(d.getDate()).padStart(2, "0") +
+          "-" +
+          String(d.getMonth() + 1).padStart(2, "0") +
+          "-" +
+          d.getFullYear(),
+
+        // tooltip time (hh:mm AM/PM)
+        time: d.toLocaleTimeString("en-IN", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        }),
+
+        systolic: r.systolic,
+        diastolic: r.diastolic,
+      };
+    });
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -89,7 +117,7 @@ export default function BPTracker() {
       };
 
       // Save BP
-      await fetch("/api/save-bp", {
+      await fetch("/api/bp-readings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bpPayload),
@@ -103,18 +131,31 @@ export default function BPTracker() {
       });
 
       // Reset form & reload readings
+      // Reset form
       setShowAddForm(false);
-      setFormData({ systolic: "", diastolic: "", pulse: "", notes: "" });
-      const updatedRes = await fetch('/api/load-csv');
+      setFormData({
+        systolic: "",
+        diastolic: "",
+        pulse: "",
+        notes: "",
+      });
+
+      // Reload readings from bp-readings API
+      const updatedRes = await fetch(
+        `/api/bp-readings?clerkId=${user.id}`
+      );
+
       const updatedData = await updatedRes.json();
-      if (updatedData.success) setReadings([...updatedData.data].reverse());
+
+      if (updatedData.success) {
+        setReadings(updatedData.readings);
+      }
 
 
     } catch (err) {
       console.error("Error saving or predicting BP:", err);
     }
   };
-
 
   return (
     <>
@@ -129,7 +170,7 @@ export default function BPTracker() {
             </div>
             <button
               onClick={() => setShowAddForm(!showAddForm)}
-              className="flex items-center space-x-2 rounded-lg bg-linear-to-r from-cyan-500 to-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:from-cyan-600 hover:to-teal-700 transition-all"
+              className="flex items-center cursor-pointer space-x-2 rounded-lg bg-linear-to-r from-cyan-500 to-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:from-cyan-600 hover:to-teal-700 transition-all"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -236,37 +277,54 @@ export default function BPTracker() {
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-400">Date & Time</th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-400">BP Reading</th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-400">Pulse</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-400">Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-400">Status</th>
                     {/* <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-400">Notes</th> */}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-800">
-                  {readings.map((reading, index) => (
-                    <tr key={index} className="hover:bg-zinc-800/50 transition-colors">
-                      <td className="whitespace-nowrap px-6 py-4">
-                        <div className="text-sm text-white">{reading.date}</div>
-                        {/* <div className="text-xs text-zinc-400">{reading.time || '—'}</div> */}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4">
-                        <div className="text-sm font-semibold text-white">
-                          {reading.systolic}/{reading.diastolic} mmHg
-                        </div>
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4">
-                        <div className="text-sm text-white">{reading.pulse || '—'} bpm</div>
-                      </td>
-                      {/* <td className="whitespace-nowrap px-6 py-4">
-                        <span
-                          className={`inline-flex rounded-full border px-2 py-0.5 text-xs font-medium ${getStatusColor(
-                            reading.status
-                          )}`}
-                        >
-                          {reading.status ? reading.status.charAt(0).toUpperCase() + reading.status.slice(1) : '—'}
-                        </span>
-                      </td> */}
-                      <td className="px-6 py-4 text-sm text-zinc-400">{reading.Name || '—'}</td>
-                    </tr>
-                  ))}
+                  {[...readings]
+                    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                    .map((reading, index) => (
+                      <tr key={index} className="hover:bg-zinc-800/50 transition-colors">
+                        <td className="whitespace-nowrap px-6 py-4">
+                          <div className="text-sm text-white">
+                            {new Date(reading.timestamp).toLocaleDateString("en-GB").replace(/\//g, "-")}
+                          </div>
+
+                          <div className="text-xs text-zinc-400">
+                            {new Date(reading.timestamp).toLocaleTimeString("en-IN", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })}
+                          </div>
+                        </td>
+
+                        <td className="whitespace-nowrap px-6 py-4">
+                          <div className="text-sm font-semibold text-white">
+                            {reading.systolic}/{reading.diastolic} mmHg
+                          </div>
+                        </td>
+
+                        <td className="whitespace-nowrap px-6 py-4">
+                          <div className="text-sm text-white">
+                            {reading.pulse || "—"} bpm
+                          </div>
+                        </td>
+
+                        <td className="whitespace-nowrap px-6 py-4">
+                          <span
+                            className={`inline-flex rounded-full border px-2 py-0.5 text-xs font-medium ${getStatusColor(
+                              reading.status
+                            )}`}
+                          >
+                            {reading.status
+                              ? reading.status.charAt(0).toUpperCase() + reading.status.slice(1)
+                              : "—"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>

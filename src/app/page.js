@@ -33,7 +33,7 @@ export default function Home() {
             </div>
           </div>
           <h1 className="text-6xl md:text-8xl font-bold text-white tracking-tight mb-4">
-            Synapse
+            Neurova
           </h1>
           <p className="text-xl md:text-2xl text-zinc-400 font-light tracking-wide">
             Intelligent Healthcare Management
@@ -44,14 +44,14 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row gap-4 mb-20">
           <button
             onClick={handlePatientPortalClick}
-            className="group relative px-8 py-4 bg-white text-black font-semibold rounded-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20"
+            className="cursor-pointer group relative px-8 py-4 bg-white text-black font-semibold rounded-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-cyan-500/20"
           >
             <span className="relative z-10">Patient Portal</span>
             <div className="absolute inset-0 bg-linear-to-r from-cyan-500/0 via-cyan-500/10 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
           <button
             onClick={handleDoctorPortalClick}
-            className="group relative px-8 py-4 bg-zinc-900 text-white font-semibold rounded-lg ring-1 ring-zinc-800 overflow-hidden transition-all duration-300 hover:scale-105 hover:ring-zinc-700"
+            className="cursor-pointer group relative px-8 py-4 bg-zinc-900 text-white font-semibold rounded-lg ring-1 ring-zinc-800 overflow-hidden transition-all duration-300 hover:scale-105 hover:ring-zinc-700"
           >
             <span className="relative z-10">Doctor Portal</span>
             <div className="absolute inset-0 bg-linear-to-r from-zinc-800/0 via-zinc-800/50 to-zinc-800/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -94,16 +94,10 @@ export default function Home() {
       <div className="relative border-t border-zinc-900 bg-black">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="text-center md:text-left">
-              <p className="text-zinc-500 text-sm mb-1">Built at</p>
-              <p className="text-white text-lg font-semibold tracking-wide">
-                CodeUtsava <span className="text-cyan-400">9.0</span>
-              </p>
-            </div>
             <div className="h-px w-12 bg-zinc-800 hidden md:block"></div>
             <div className="text-center md:text-right">
               <p className="text-zinc-500 text-sm mb-1">Created by</p>
-              <p className="text-white text-lg font-semibold">Team <span className="text-cyan-400">Always Last</span></p>
+              <p className="text-white text-lg font-semibold"><span className="text-cyan-400"> Shivam Mishra</span></p>
             </div>
           </div>
         </div>

@@ -15,7 +15,7 @@ export default function UserFooter() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               </div>
-              <span className="text-xl font-bold text-white">Synapse</span>
+              <span className="text-xl font-bold text-white">Neurova</span>
               <span className="rounded-full bg-cyan-500/20 px-2 py-0.5 text-xs font-medium text-cyan-400 ring-1 ring-cyan-500/30">
                 Patient
               </span>
@@ -79,7 +79,7 @@ export default function UserFooter() {
             <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-200">Support</h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <a href="mailto:support@synapse.health" className="text-sm text-zinc-400 hover:text-cyan-400 transition-colors">
+                <a href="mailto:support@neurova.health" className="text-sm text-zinc-400 hover:text-cyan-400 transition-colors">
                   📧 Contact Support
                 </a>
               </li>
@@ -90,7 +90,7 @@ export default function UserFooter() {
               </li>
               <li>
                 <Link href="/" className="text-sm text-zinc-400 hover:text-cyan-400 transition-colors">
-                  ℹ️ About Synapse
+                  ℹ️ About Neurova
                 </Link>
               </li>
               <li>
@@ -104,7 +104,7 @@ export default function UserFooter() {
 
         <div className="mt-8 border-t border-zinc-800 pt-8">
           <p className="text-center text-sm text-zinc-400">
-            © {currentYear} Synapse Patient Portal. All rights reserved. This platform is for educational purposes. Always consult with qualified healthcare professionals.
+            © {currentYear} Neurova Patient Portal. All rights reserved. This platform is for educational purposes. Always consult with qualified healthcare professionals.
           </p>
         </div>
       </div>

@@ -15,7 +15,7 @@ export default function DocFooter() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <span className="text-xl font-bold text-white">Synapse</span>
+              <span className="text-xl font-bold text-white">Neurova</span>
               <span className="rounded-full bg-teal-500/20 px-2 py-0.5 text-xs font-medium text-teal-400 ring-1 ring-teal-500/30">
                 Doctor
               </span>
@@ -79,7 +79,7 @@ export default function DocFooter() {
             <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-200">Resources</h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <a href="mailto:doctors@synapse.health" className="text-sm text-zinc-400 hover:text-teal-400 transition-colors">
+                <a href="mailto:doctors@neurova.health" className="text-sm text-zinc-400 hover:text-teal-400 transition-colors">
                   📧 Medical Support
                 </a>
               </li>
@@ -104,7 +104,7 @@ export default function DocFooter() {
 
         <div className="mt-8 border-t border-zinc-800 pt-8">
           <p className="text-center text-sm text-zinc-400">
-            © {currentYear} Synapse Doctor Portal. All rights reserved. For licensed healthcare professionals only. This platform is for educational purposes.
+            © {currentYear} Neurova Doctor Portal. All rights reserved. For licensed healthcare professionals only. This platform is for educational purposes.
           </p>
         </div>
       </div>

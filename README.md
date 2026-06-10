@@ -1,4 +1,4 @@
-# Synapse - AI-Powered Hypertension Management
+# Neurova - AI-Powered Hypertension Management
 
 <div align="center">
 
@@ -17,7 +17,7 @@
 
 ## Our Solution
 
-**Synapse** bridges the gap between patients, doctors, and families with:
+**Neurova** bridges the gap between patients, doctors, and families with:
 
 **AI Deterioration Alerts** - 6 algorithms detect emergencies before they happen  
 **Doctor Dashboard** - Real-time patient monitoring with smart recommendations  
@@ -114,15 +114,6 @@ ML predictive models, Hospital EMR integration, Insurance APIs
 AES-256 encryption at rest | TLS 1.3 in transit  
 OAuth 2.0 authentication | Row-level authorization  
 HIPAA/GDPR/DPDPA compliance roadmap
-
----
-
-## Team
-
-1. Ujjwal Singh
-2. Rohit Ratnam
-3. Aditya Kumar
-4. Shivam Mishra
 
 ---
 

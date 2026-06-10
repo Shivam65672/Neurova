@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import UserNav from '@/components/UserNav';
+import UserFooter from '@/components/UserFooter';
 
 export default function UserProfilePage() {
   const { user, isLoaded } = useUser();
@@ -157,80 +159,83 @@ export default function UserProfilePage() {
   );
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-black text-white">
-      {/* Glowing Background */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute left-1/3 top-10 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl animate-pulse"></div>
-        <div className="absolute right-1/4 top-1/2 h-96 w-96 rounded-full bg-teal-500/20 blur-3xl animate-pulse delay-1000"></div>
-      </div>
-
-      <div className="mx-auto max-w-6xl px-6 py-12">
-        {/* Header */}
-        <div className="mb-10 flex items-center justify-between border-b border-zinc-800 pb-6">
-          <div>
-            <h1 className="text-4xl font-extrabold bg-linear-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
-              Patient Profile
-            </h1>
-            <p className="mt-2 text-zinc-400 text-sm">
-              Manage your personal and medical details.
-            </p>
-          </div>
-          <button
-            onClick={() => (editing ? handleSave() : setEditing(true))}
-            className={`rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-4 py-2 text-sm font-medium transition-all ${
-              editing
-                ? "text-green-400 hover:bg-green-500/20"
-                : "text-cyan-400 hover:bg-cyan-500/20"
-            }`}
-          >
-            {editing ? "💾 Save" : "✏️ Edit Profile"}
-          </button>
+    <>
+      <UserNav />
+      <div className="relative min-h-screen overflow-hidden bg-black text-white">
+        {/* Glowing Background */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute left-1/3 top-10 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl animate-pulse"></div>
+          <div className="absolute right-1/4 top-1/2 h-96 w-96 rounded-full bg-teal-500/20 blur-3xl animate-pulse delay-1000"></div>
         </div>
 
-        {/* Sections */}
-        <div className="rounded-2xl border border-zinc-800 bg-linear-to-br from-zinc-900/60 to-zinc-950/60 p-8 shadow-[0_0_25px_-5px_rgba(6,182,212,0.15)] hover:shadow-[0_0_35px_-5px_rgba(20,184,166,0.25)] transition-all duration-300">
-          {/* Personal Info */}
-          <h2 className="text-lg font-semibold text-cyan-400 mb-4">🧍 Personal Information</h2>
-          <div className="grid gap-6 sm:grid-cols-2">
-            {[
-              ["name", "Full Name"],
-              ["gender", "Gender", "select", ["Male", "Female", "Other"]],
-              ["age", "Age", "number"],
-              ["height", "Height (cm)", "number"],
-              ["weight", "Weight (kg)", "number"],
-              ["bmi", "BMI", "number"],
-            ].map((f) => renderField(...f))}
+        <div className="mx-auto max-w-6xl px-6 py-12">
+          {/* Header */}
+          <div className="mb-10 flex items-center justify-between border-b border-zinc-800 pb-6">
+            <div>
+              <h1 className="text-4xl font-extrabold bg-linear-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
+                Patient Profile
+              </h1>
+              <p className="mt-2 text-zinc-400 text-sm">
+                Manage your personal and medical details.
+              </p>
+            </div>
+            <button
+              onClick={() => (editing ? handleSave() : setEditing(true))}
+              className={`rounded-lg cursor-pointer border border-cyan-500/40 bg-cyan-500/10 px-4 py-2 text-sm font-medium transition-all ${editing
+                  ? "text-green-400 hover:bg-green-500/20"
+                  : "text-cyan-400 hover:bg-cyan-500/20"
+                }`}
+            >
+              {editing ? "💾 Save" : "✏️ Edit Profile"}
+            </button>
           </div>
 
-          {/* Lifestyle Info */}
-          <h2 className="text-lg font-semibold text-cyan-400 mt-10 mb-4">💪 Lifestyle</h2>
-          <div className="grid gap-6 sm:grid-cols-2">
-            {[
-              ["smoker", "Smoker", "select", ["Yes", "No"]],
-              ["alcohol", "Alcohol Consumption", "select", ["Yes", "No"]],
-              ["activityLevel", "Activity Level", "select", ["Sedentary", "Lightly Active", "Moderately Active", "Very Active"]],
-              ["dietType", "Diet Type", "select", ["Vegetarian", "Non-Vegetarian", "Vegan", "Mixed"]],
-              ["stressLevel", "Stress Level", "select", ["Low", "Moderate", "High"]],
-              ["sleepHours", "Sleep Hours", "number"],
-            ].map((f) => renderField(...f))}
-          </div>
+          {/* Sections */}
+          <div className="rounded-2xl border border-zinc-800 bg-linear-to-br from-zinc-900/60 to-zinc-950/60 p-8 shadow-[0_0_25px_-5px_rgba(6,182,212,0.15)] hover:shadow-[0_0_35px_-5px_rgba(20,184,166,0.25)] transition-all duration-300">
+            {/* Personal Info */}
+            <h2 className="text-lg font-semibold text-cyan-400 mb-4">🧍 Personal Information</h2>
+            <div className="grid gap-6 sm:grid-cols-2">
+              {[
+                ["name", "Full Name"],
+                ["gender", "Gender", "select", ["Male", "Female", "Other"]],
+                ["age", "Age", "number"],
+                ["height", "Height (cm)", "number"],
+                ["weight", "Weight (kg)", "number"],
+                ["bmi", "BMI", "number"],
+              ].map((f) => renderField(...f))}
+            </div>
 
-          {/* Medical Info */}
-          <h2 className="text-lg font-semibold text-cyan-400 mt-10 mb-4">🩺 Medical Details</h2>
-          <div className="grid gap-6 sm:grid-cols-2">
-            {[
-              ["diabetes", "Diabetes", "select", ["No", "Type 1", "Type 2"]],
-              ["cholesterol", "Cholesterol", "select", ["Normal", "Borderline High", "High", "Unknown"]],
-              ["familyHistory", "Family History of BP", "select", ["Yes", "No"]],
-              ["currentMedication", "Current Medication (comma separated)"],
-              ["previousMedication", "Previous Medication (comma separated)"],
-              ["allergies", "Allergies (comma separated)"],
-            ].map((f) => renderField(...f))}
-          </div>
+            {/* Lifestyle Info */}
+            <h2 className="text-lg font-semibold text-cyan-400 mt-10 mb-4">💪 Lifestyle</h2>
+            <div className="grid gap-6 sm:grid-cols-2">
+              {[
+                ["smoker", "Smoker", "select", ["Yes", "No"]],
+                ["alcohol", "Alcohol Consumption", "select", ["Yes", "No"]],
+                ["activityLevel", "Activity Level", "select", ["Sedentary", "Lightly Active", "Moderately Active", "Very Active"]],
+                ["dietType", "Diet Type", "select", ["Vegetarian", "Non-Vegetarian", "Vegan", "Mixed"]],
+                ["stressLevel", "Stress Level", "select", ["Low", "Moderate", "High"]],
+                ["sleepHours", "Sleep Hours", "number"],
+              ].map((f) => renderField(...f))}
+            </div>
 
-          {message && <p className="mt-6 text-cyan-400">{message}</p>}
+            {/* Medical Info */}
+            <h2 className="text-lg font-semibold text-cyan-400 mt-10 mb-4">🩺 Medical Details</h2>
+            <div className="grid gap-6 sm:grid-cols-2">
+              {[
+                ["diabetes", "Diabetes", "select", ["No", "Type 1", "Type 2"]],
+                ["cholesterol", "Cholesterol", "select", ["Normal", "Borderline High", "High", "Unknown"]],
+                ["familyHistory", "Family History of BP", "select", ["Yes", "No"]],
+                ["currentMedication", "Current Medication (comma separated)"],
+                ["previousMedication", "Previous Medication (comma separated)"],
+                ["allergies", "Allergies (comma separated)"],
+              ].map((f) => renderField(...f))}
+            </div>
+
+            {message && <p className="mt-6 text-cyan-400">{message}</p>}
+          </div>
         </div>
       </div>
-    </div>
+      <UserFooter />
+    </>
   );
 }

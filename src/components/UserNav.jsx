@@ -33,7 +33,7 @@ export default function UserNav() {
                 </svg>
               </div>
               <div>
-                <span className="text-2xl font-bold text-white">Synapse</span>
+                <span className="text-2xl font-bold text-white">Neurova</span>
                 <span className="ml-2 rounded-full bg-cyan-500/20 px-2.5 py-0.5 text-xs font-medium text-cyan-400 ring-1 ring-cyan-500/30">
                   Patient Portal
                 </span>

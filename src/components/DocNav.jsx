@@ -63,7 +63,7 @@ export default function DocNav() {
                 </svg>
               </div>
               <div>
-                <span className="text-2xl font-bold text-white">Synapse</span>
+                <span className="text-2xl font-bold text-white">Neurova</span>
                 <span className="ml-2 rounded-full bg-teal-500/20 px-2.5 py-0.5 text-xs font-medium text-teal-400 ring-1 ring-teal-500/30">
                   Doctor Portal
                 </span>
