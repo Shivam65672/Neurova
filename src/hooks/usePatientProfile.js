@@ -14,7 +14,7 @@ export function usePatientProfile() {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch(`/api/user/profile?clerkUserId=${user.id}`);
+      const res = await fetch(`/api/patient/profile?clerkUserId=${user.id}`);
       if (res.ok) {
         const data = await res.json();
         setProfile(data);

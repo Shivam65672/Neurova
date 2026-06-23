@@ -1,3 +1,5 @@
+// No API used, directly medicine image sent from here to OCR api(link)
+
 "use client";
 
 import React, { useState } from "react";

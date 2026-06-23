@@ -175,8 +175,8 @@ export default function DoctorPatients() {
           </div>
 
           {/* Filter Tabs */}
-          <div className="mb-6 border-b border-zinc-800">
-            <nav className="-mb-px flex space-x-8">
+          <div className="mb-6 overflow-x-auto border-b border-zinc-800">
+            <nav className="-mb-px flex min-w-max space-x-4 sm:space-x-8">
               {['all', 'pending', 'approved', 'dispensed'].map((status) => (
                 <button
                   key={status}
@@ -207,14 +207,14 @@ export default function DoctorPatients() {
                   key={patient.id}
                   className="group rounded-xl border border-zinc-800 bg-linear-to-br from-zinc-900/50 to-zinc-800/30 p-6 hover:border-cyan-500/50 transition-all duration-300"
                 >
-                  <div className="flex items-start justify-between">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     {/* Left Section - Patient Info */}
-                    <div className="flex items-start space-x-4 flex-1">
+                    <div className="flex items-start space-x-4 flex-1 min-w-0">
                       <div className="h-14 w-14 rounded-full bg-linear-to-br from-cyan-500 to-teal-600 flex items-center justify-center text-white text-xl font-bold shrink-0">
                         {patient.name.charAt(0).toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-3 mb-2">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
                           <h3 className="text-xl font-semibold text-white">{patient.name}</h3>
                           <span className="text-sm text-zinc-500">•</span>
                           <span className="text-sm text-zinc-400">{patient.age} years</span>
@@ -251,7 +251,7 @@ export default function DoctorPatients() {
                     </div>
 
                     {/* Right Section - Status & Action */}
-                    <div className="flex flex-col items-end space-y-3 ml-6">
+                    <div className="flex flex-row items-center justify-between gap-3 sm:flex-col sm:items-end sm:ml-6">
                       <span className={`inline-flex rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ${getStatusColor(patient.prescriptionStatus)}`}>
                         {patient.prescriptionStatus}
                       </span>

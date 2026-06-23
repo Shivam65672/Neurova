@@ -13,6 +13,7 @@ export default function UserNav() {
   const patientLinks = [
     { name: 'Dashboard', href: '/patient/dashboard' },
     { name: 'BP Tracker', href: '/patient/bp-tracker' },
+    { name: 'Symptoms', href: '/patient/symptoms' },
     { name: 'Medical History', href: '/patient/medical-history' },
     { name: 'Medications', href: '/patient/medications' },
     { name: 'Family Circle', href: '/patient/family-circle' },

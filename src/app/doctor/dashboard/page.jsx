@@ -95,9 +95,9 @@ export default function DoctorDashboard() {
       <DocNav />
       <div className="min-h-screen bg-black">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white">Doctor Dashboard</h1>
+            <h1 className="text-2xl font-bold text-white sm:text-3xl">Doctor Dashboard</h1>
             <p className="mt-2 text-zinc-400">Review AI suggestions, approve prescriptions, and monitor patients.</p>
           </div>
           <div className="space-x-3">
@@ -132,7 +132,7 @@ export default function DoctorDashboard() {
           {/* Patient Deterioration Alerts */}
           {alertStats.total > 0 && (
             <div className="rounded-xl border border-red-900/50 bg-red-900/10 p-6">
-              <div className="mb-4 flex items-center justify-between">
+              <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h2 className="text-xl font-semibold text-white">🚨 Patient Deterioration Alerts</h2>
                   <p className="mt-1 text-sm text-zinc-400">
@@ -155,7 +155,7 @@ export default function DoctorDashboard() {
                   </div>
                 ) : recentAlerts.length > 0 ? (
                   recentAlerts.map((alert, idx) => (
-                    <div key={idx} className="flex items-center justify-between rounded-lg border border-zinc-800 bg-black/50 p-4">
+                    <div key={idx} className="flex flex-col gap-4 rounded-lg border border-zinc-800 bg-black/50 p-4 sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex items-center gap-4">
                         <div className={`flex h-12 w-12 items-center justify-center rounded-full ${
                           alert.severity === 'critical' ? 'bg-red-500/20 text-red-400' :
@@ -172,7 +172,7 @@ export default function DoctorDashboard() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-wrap items-center gap-3">
                         <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase ${
                           alert.severity === 'critical' ? 'bg-red-500/20 text-red-400' :
                           alert.severity === 'high' ? 'bg-orange-500/20 text-orange-400' :
@@ -200,21 +200,21 @@ export default function DoctorDashboard() {
           <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
             <h2 className="text-xl font-semibold text-white">Recent AI Suggestions</h2>
             <div className="mt-4 space-y-3">
-              <div className="flex items-center justify-between rounded-lg border border-zinc-800 bg-black/50 p-4">
+              <div className="flex flex-col gap-4 rounded-lg border border-zinc-800 bg-black/50 p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="font-medium text-white">John Doe — Amlodipine 5mg</p>
                   <p className="text-sm text-zinc-400">Suggested by AI • Elevated BP trend</p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                   <Link href="/doctor/prescriptions/1" className="rounded-md bg-cyan-600 px-3 py-1 text-sm text-white">Review</Link>
                 </div>
               </div>
-              <div className="flex items-center justify-between rounded-lg border border-zinc-800 bg-black/50 p-4">
+              <div className="flex flex-col gap-4 rounded-lg border border-zinc-800 bg-black/50 p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="font-medium text-white">Mary Smith — Losartan 50mg</p>
                   <p className="text-sm text-zinc-400">Doctor-approved</p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                   <Link href="/doctor/prescriptions/2" className="rounded-md border border-zinc-700 px-3 py-1 text-sm text-white">View</Link>
                 </div>
               </div>

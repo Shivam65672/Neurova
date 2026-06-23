@@ -203,7 +203,7 @@ export default function DoctorPrescriptions() {
                     {recentActivity.map((activity) => (
                       <div
                         key={activity.id}
-                        className="flex items-center justify-between p-4 rounded-lg border border-zinc-800 bg-black/50 hover:border-cyan-500/30 transition-colors cursor-pointer"
+                        className="flex flex-col gap-3 p-4 rounded-lg border border-zinc-800 bg-black/50 hover:border-cyan-500/30 transition-colors cursor-pointer sm:flex-row sm:items-center sm:justify-between"
                         onClick={() => router.push(`/doctor/patients/${activity.id}`)}
                       >
                         <div className="flex-1">

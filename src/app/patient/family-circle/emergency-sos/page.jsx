@@ -1,3 +1,5 @@
+// API used is api/patient/family-members.js to get all family detail
+
 'use client';
 import { useUser } from "@clerk/nextjs";
 import { useState, useEffect } from 'react';
@@ -25,7 +27,7 @@ const [emergencyContacts,setEmergencyContacts] = useState([]);
     const loadContacts=async()=>{
 
         const res=await fetch(
-            `/api/family-members?clerkId=${user.id}`
+            `/api/patient/family-members?clerkId=${user.id}`
         );
 
         const data=await res.json();

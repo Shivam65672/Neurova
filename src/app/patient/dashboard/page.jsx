@@ -1,3 +1,5 @@
+// API used is api/patient/bp-readings.js to get recent blood pressure readings for the dashboard page
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -28,7 +30,7 @@ export default function PatientDashboard() {
     try {
 
       const res = await fetch(
-        `/api/bp-readings?clerkId=${user.id}`
+        `/api/patient/bp-readings?clerkId=${user.id}`
       );
 
       const data = await res.json();

@@ -1,3 +1,5 @@
+// API used is api/patient/family-members.js
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -24,7 +26,7 @@ export default function FamilyCirclePage() {
 
       try {
         const response = await fetch(
-          `/api/family-members?clerkId=${user.id}`
+          `/api/patient/family-members?clerkId=${user.id}`
         );
 
         const data = await response.json();
@@ -56,7 +58,7 @@ export default function FamilyCirclePage() {
     };
 
     try {
-      const response = await fetch('/api/family-members', {
+      const response = await fetch('/api/patient/family-members', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -102,7 +104,7 @@ export default function FamilyCirclePage() {
   const removeMember = async (id) => {
     if (confirm('Remove this member from your Family Circle?')) {
       try {
-        await fetch(`/api/family-members?id=${id}`, {
+        await fetch(`/api/patient/family-members?id=${id}`, {
           method: 'DELETE',
         });
 

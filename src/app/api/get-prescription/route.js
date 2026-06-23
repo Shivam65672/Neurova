@@ -42,6 +42,10 @@ export async function POST(req) {
       usage: p.usage,
       exercise: p.exercise,
       prescriptionStatus: p.prescriptionStatus,
+      doctorName: p.doctorName,
+      approvedAt: p.approvedAt,
+      isActive: p.isActive,
+      datePredicted: p.datePredicted,
       createdAt: p.createdAt,
       updatedAt: p.updatedAt,
     }));

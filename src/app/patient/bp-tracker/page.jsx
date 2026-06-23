@@ -1,3 +1,7 @@
+// API used:
+// - api/patient/bp-readings.js to fetch and save blood pressure readings
+// - api/patient/profile.js to get patient profile details
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -25,7 +29,7 @@ export default function BPTracker() {
 
     const fetchReadings = async () => {
       try {
-        const res = await fetch(`/api/bp-readings?clerkId=${user.id}`);
+        const res = await fetch(`/api/patient/bp-readings?clerkId=${user.id}`);
         const data = await res.json();
 
         if (data.success) {
@@ -93,7 +97,7 @@ export default function BPTracker() {
     e.preventDefault();
 
     try {
-      const profileRes = await fetch(`/api/user/profile?clerkUserId=${user.id}`);
+      const profileRes = await fetch(`/api/patient/profile?clerkUserId=${user.id}`);
       const userProfile = await profileRes.json();
 
       if (!userProfile || !userProfile.clerkUserId) return;
@@ -117,14 +121,7 @@ export default function BPTracker() {
       };
 
       // Save BP
-      await fetch("/api/bp-readings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(bpPayload),
-      });
-
-      // Predict BP
-      await fetch("/api/predict-bp", {
+      await fetch("/api/patient/bp-readings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bpPayload),
@@ -142,7 +139,7 @@ export default function BPTracker() {
 
       // Reload readings from bp-readings API
       const updatedRes = await fetch(
-        `/api/bp-readings?clerkId=${user.id}`
+        `/api/patient/bp-readings?clerkId=${user.id}`
       );
 
       const updatedData = await updatedRes.json();

@@ -302,12 +302,12 @@ export default function DoctorHome() {
                       key={appointment.id}
                       className="group relative overflow-hidden rounded-xl bg-black/50 p-4 ring-1 ring-zinc-800/50 transition-all hover:ring-teal-500/50"
                     >
-                      <div className="flex items-center gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-br from-teal-500 to-emerald-500 text-sm font-bold text-white shadow-lg">
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-teal-500 to-emerald-500 text-sm font-bold text-white shadow-lg">
                           {appointment.avatar}
                         </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
                             <p className="font-semibold text-white">{appointment.patient}</p>
                             <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                               appointment.status === 'urgent'
@@ -319,7 +319,7 @@ export default function DoctorHome() {
                               {appointment.status}
                             </span>
                           </div>
-                          <div className="mt-1 flex items-center gap-4 text-sm text-zinc-400">
+                          <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-zinc-400 sm:gap-4">
                             <span className="flex items-center gap-1">
                               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -330,7 +330,7 @@ export default function DoctorHome() {
                             <span>{appointment.type}</span>
                           </div>
                         </div>
-                        <button className="rounded-lg bg-teal-500/10 px-4 py-2 text-sm font-medium text-teal-400 ring-1 ring-teal-500/20 transition-all hover:bg-teal-500/20">
+                        <button className="w-full rounded-lg bg-teal-500/10 px-4 py-2 text-sm font-medium text-teal-400 ring-1 ring-teal-500/20 transition-all hover:bg-teal-500/20 sm:w-auto">
                           Start
                         </button>
                       </div>

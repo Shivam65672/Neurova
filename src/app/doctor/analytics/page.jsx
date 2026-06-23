@@ -56,7 +56,7 @@ export default function DoctorAnalytics() {
           {/* Patient Distribution */}
           <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
             <h2 className="mb-4 text-xl font-bold text-white">Patient BP Distribution</h2>
-            <div className="h-80 rounded-lg border border-zinc-800 bg-black/50 p-4">
+            <div className="h-64 rounded-lg border border-zinc-800 bg-black/50 p-4 sm:h-80">
               <AnalyticsBarChart data={patientDistribution} dataKey="count" barColor="#06b6d4" />
             </div>
           </div>
@@ -64,7 +64,7 @@ export default function DoctorAnalytics() {
           {/* Weekly Trends */}
           <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
             <h2 className="mb-4 text-xl font-bold text-white">Weekly Avg Systolic BP</h2>
-            <div className="h-80 rounded-lg border border-zinc-800 bg-black/50 p-4">
+            <div className="h-64 rounded-lg border border-zinc-800 bg-black/50 p-4 sm:h-80">
               <AnalyticsBarChart data={weeklyTrends} dataKey="avgSystolic" barColor="#14b8a6" />
             </div>
           </div>

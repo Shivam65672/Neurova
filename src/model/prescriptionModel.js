@@ -49,6 +49,14 @@ const BPPredictionSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    doctorName: {
+      type: String,
+      default: null,
+    },
+    approvedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

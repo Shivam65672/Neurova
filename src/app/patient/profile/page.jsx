@@ -1,3 +1,5 @@
+// API used is api/patient/profile.js to get and update patient profile details
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -20,7 +22,7 @@ export default function UserProfilePage() {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch(`/api/user/profile?clerkUserId=${user.id}`);
+      const res = await fetch(`/api/patient/profile?clerkUserId=${user.id}`);
       if (res.status === 404) {
         await createDefaultProfile();
       } else {
@@ -56,7 +58,7 @@ export default function UserProfilePage() {
       previousMedication: [],
       allergies: [],
     };
-    const res = await fetch("/api/user/profile", {
+    const res = await fetch("/api/patient/profile", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(defaultData),
@@ -99,7 +101,7 @@ export default function UserProfilePage() {
     if (!validateForm()) return;
 
     const payload = { ...profile, ...form, clerkUserId: user.id };
-    const res = await fetch("/api/user/profile", {
+    const res = await fetch("/api/patient/profile", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

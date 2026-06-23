@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import DocNav from '@/components/DocNav';
 import DocFooter from '@/components/DocFooter';
+import { useDoctorProfile } from '@/hooks/useDoctorProfile';
 
 export default function PrescriptionReview() {
   const params = useParams();
@@ -13,6 +14,7 @@ export default function PrescriptionReview() {
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState(null);
   const [saving, setSaving] = useState(false);
+  const { profile: doctorProfile, loading: doctorLoading } = useDoctorProfile();
 
   useEffect(() => {
     const fetchPrescription = async () => {
@@ -22,7 +24,7 @@ export default function PrescriptionReview() {
           headers: { 'Content-Type': 'application/json' },
         });
         const data = await res.json();
-        
+
         if (data.success) {
           setPrescription(data.data);
           setEditedData(data.data);
@@ -53,12 +55,15 @@ export default function PrescriptionReview() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch('/api/update-prescription', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/update-prescription", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          id: params.id,
-          ...editedData,
+          id: prescription._id,
+          prescriptionStatus: "approved",
+          doctorName: doctorProfile?.name || "Verified Doctor",
         }),
       });
 
@@ -87,13 +92,22 @@ export default function PrescriptionReview() {
         body: JSON.stringify({
           id: params.id,
           prescriptionStatus: 'approved',
+          doctorName: doctorProfile?.name || 'Verified Doctor',
         }),
       });
 
       const data = await res.json();
       if (data.success) {
-        setPrescription({ ...prescription, prescriptionStatus: 'approved' });
-        setEditedData({ ...editedData, prescriptionStatus: 'approved' });
+        setPrescription({
+          ...prescription,
+          prescriptionStatus: 'approved',
+          doctorName: doctorProfile?.name || 'Verified Doctor',
+        });
+        setEditedData({
+          ...editedData,
+          prescriptionStatus: 'approved',
+          doctorName: doctorProfile?.name || 'Verified Doctor',
+        });
         alert('Prescription approved successfully!');
         router.push('/doctor/patients');
       } else {
@@ -199,12 +213,12 @@ export default function PrescriptionReview() {
               </svg>
               <span>Back to Patients</span>
             </button>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-white">Prescription Review</h1>
                 <p className="mt-2 text-zinc-400">Review and edit AI-generated prescription details</p>
               </div>
-              <span className={`inline-flex rounded-full border px-4 py-2 text-sm font-semibold uppercase tracking-wider ${getStatusColor(editedData?.prescriptionStatus)}`}>
+              <span className={`inline-flex w-fit rounded-full border px-4 py-2 text-sm font-semibold uppercase tracking-wider ${getStatusColor(editedData?.prescriptionStatus)}`}>
                 {editedData?.prescriptionStatus}
               </span>
             </div>
@@ -218,7 +232,7 @@ export default function PrescriptionReview() {
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-white">{prescription.patientName}</h2>
-                <div className="mt-2 flex items-center space-x-6 text-sm">
+                <div className="mt-2 flex flex-wrap items-center gap-3 text-sm sm:gap-6">
                   <div className="text-zinc-400">
                     <span className="text-zinc-500">Age:</span> {prescription.patientAge} years
                   </div>
@@ -344,8 +358,8 @@ export default function PrescriptionReview() {
           </div>
 
           {/* Action Buttons */}
-          <div className="mt-6 flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap items-center gap-3">
               {!isEditing ? (
                 <>
                   <button

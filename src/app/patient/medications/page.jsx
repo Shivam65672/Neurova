@@ -27,10 +27,18 @@ export default function MedicationsPage() {
 
         const data = await res.json();
         if (data.success) {
-          const approved = data.data
-            .filter(p => p.prescriptionStatus.toLowerCase() === 'approved')
-            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-          setMedications(approved);
+          const activePrescription = data.data.find(
+            p =>
+              p.prescriptionStatus?.toLowerCase() ===
+              "approved" &&
+              p.isActive === true
+          );
+
+          setMedications(
+            activePrescription
+              ? [activePrescription]
+              : []
+          );
         }
       } catch (err) {
         console.error('Error fetching prescriptions:', err);
@@ -130,7 +138,13 @@ export default function MedicationsPage() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-semibold text-white">No Approved Prescriptions</h3>
-                <p className="mt-2 text-zinc-400">You don't have any approved prescriptions yet.</p>
+                <p className="mt-2 text-zinc-400">
+                  You don&apos;t have any approved prescriptions yet. Generate one from the{" "}
+                  <a href="/patient/symptoms" className="text-cyan-400 hover:text-cyan-300 underline">
+                    Symptoms
+                  </a>{" "}
+                  page and wait for your doctor to approve it.
+                </p>
               </div>
             ) : (
               medications.map((prescription) => (
@@ -149,6 +163,23 @@ export default function MedicationsPage() {
                       </div>
                       <p className="mt-1 text-sm text-zinc-400">
                         Stage: <span className="font-semibold text-cyan-400">{prescription.stage}</span>
+                      </p>
+                      <p className="mt-1 text-sm text-zinc-400">
+                        Doctor:
+                        <span className="ml-2 font-semibold text-white">
+                          {prescription.doctorName || "Awaiting Doctor Approval"}
+                        </span>
+                      </p>
+
+                      <p className="mt-1 text-sm text-zinc-400">
+                        Prescription Date:
+                        <span className="ml-2 font-semibold text-white">
+                          {prescription.approvedAt
+                            ? new Date(
+                              prescription.approvedAt
+                            ).toLocaleDateString()
+                            : "Pending Approval"}
+                        </span>
                       </p>
                     </div>
 

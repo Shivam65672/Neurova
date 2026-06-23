@@ -1,3 +1,5 @@
+// API used is api/patient/medical-history.js
+
 'use client';
 import { useUser } from '@clerk/nextjs';
 import { useEffect } from 'react';
@@ -321,7 +323,7 @@ export default function MedicalHistory() {
       setHistoryLoading(true);
 
       const res = await fetch(
-        `/api/medical-history?clerkId=${user.id}`
+        `/api/patient/medical-history?clerkId=${user.id}`
       );
 
       const data = await res.json();
@@ -376,7 +378,7 @@ export default function MedicalHistory() {
     console.log("Sending:", conditionForm);
 
     try {
-      const res = await fetch("/api/medical-history", {
+      const res = await fetch("/api/patient/medical-history", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -414,7 +416,7 @@ export default function MedicalHistory() {
 
   const handleAddAllergy = async () => {
     try {
-      const res = await fetch("/api/medical-history", {
+      const res = await fetch("/api/patient/medical-history", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -450,7 +452,7 @@ export default function MedicalHistory() {
 
   const handleAddSurgery = async () => {
     try {
-      const res = await fetch("/api/medical-history", {
+      const res = await fetch("/api/patient/medical-history", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -485,7 +487,7 @@ export default function MedicalHistory() {
 
   const handleAddFamily = async () => {
     try {
-      const res = await fetch("/api/medical-history", {
+      const res = await fetch("/api/patient/medical-history", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -519,7 +521,7 @@ export default function MedicalHistory() {
 
   const handleAddLab = async () => {
     try {
-      const res = await fetch("/api/medical-history", {
+      const res = await fetch("/api/patient/medical-history", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -98,9 +98,9 @@ export default function DoctorProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex justify-center p-6">
+    <div className="min-h-screen bg-black text-white flex justify-center p-4 sm:p-6">
       <div className="w-full max-w-3xl">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col gap-4 mb-8 sm:flex-row sm:justify-between sm:items-center">
           <div>
             <h1 className="text-3xl font-bold text-cyan-400">Doctor Profile</h1>
             <p className="text-gray-400 text-sm">
@@ -121,7 +121,7 @@ export default function DoctorProfile() {
               <h2 className="text-lg font-semibold text-cyan-300 mb-4">
                 👨‍⚕️ Professional Information
               </h2>
-              <div className="grid grid-cols-2 gap-y-3 text-gray-300">
+              <div className="grid grid-cols-1 gap-y-3 text-gray-300 sm:grid-cols-2">
                 <div>
                   <p className="text-sm text-gray-500">Full Name</p>
                   <p className="text-white font-medium">{formData.name || "—"}</p>
@@ -169,7 +169,7 @@ export default function DoctorProfile() {
             </>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <input
                   name="name"
                   placeholder="Full Name"

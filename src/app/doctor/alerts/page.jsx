@@ -197,24 +197,22 @@ export default function PatientAlertsPage() {
       <div className="min-h-screen bg-black py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-4xl font-bold text-white">Patient Deterioration Alerts</h1>
-                <p className="mt-2 text-lg text-zinc-400">
-                  Real-time monitoring and early warning system for patient health deterioration
-                </p>
-              </div>
-              <button
-                onClick={fetchAlerts}
-                className="rounded-lg bg-teal-500/10 px-4 py-2 text-sm font-medium text-teal-400 ring-1 ring-teal-500/20 transition-all hover:bg-teal-500/20"
-              >
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-white sm:text-4xl">Patient Deterioration Alerts</h1>
+              <p className="mt-2 text-base text-zinc-400 sm:text-lg">
+                Real-time monitoring and early warning system for patient health deterioration
+              </p>
+            </div>
+            <button
+              onClick={fetchAlerts}
+              className="w-full rounded-lg bg-teal-500/10 px-4 py-2 text-sm font-medium text-teal-400 ring-1 ring-teal-500/20 transition-all hover:bg-teal-500/20 sm:w-auto"
+            >
                 <svg className="inline-block mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
                 Refresh
-              </button>
-            </div>
+            </button>
           </div>
 
           {/* Stats Cards */}
@@ -263,7 +261,7 @@ export default function PatientAlertsPage() {
           </div>
 
           {/* Filter Tabs */}
-          <div className="mb-6 flex gap-2">
+          <div className="mb-6 flex flex-wrap gap-2">
             <button
               onClick={() => setFilter('all')}
               className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
@@ -339,7 +337,7 @@ export default function PatientAlertsPage() {
 
                   <div className="ml-4">
                     {/* Header */}
-                    <div className="mb-4 flex items-start justify-between">
+                    <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                       <div className="flex items-center gap-4">
                         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-br from-teal-500 to-emerald-500 text-xl font-bold text-white">
                           {alert.patientName.charAt(0)}
@@ -375,7 +373,7 @@ export default function PatientAlertsPage() {
                     </div>
 
                     {/* Latest Reading */}
-                    <div className="mb-4 flex items-center gap-6 rounded-xl bg-black/30 p-4">
+                    <div className="mb-4 flex flex-col gap-4 rounded-xl bg-black/30 p-4 sm:flex-row sm:items-center sm:gap-6">
                       <div>
                         <p className="text-xs text-zinc-500">Latest BP Reading</p>
                         <p className="mt-1 text-2xl font-bold text-white">
@@ -383,7 +381,7 @@ export default function PatientAlertsPage() {
                           <span className="ml-2 text-sm font-normal text-zinc-400">mmHg</span>
                         </p>
                       </div>
-                      <div className="h-12 w-px bg-zinc-700"></div>
+                      <div className="hidden h-12 w-px bg-zinc-700 sm:block"></div>
                       <div>
                         <p className="text-xs text-zinc-500">Recorded</p>
                         <p className="mt-1 text-sm font-medium text-zinc-300">
