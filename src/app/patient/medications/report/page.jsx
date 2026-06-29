@@ -14,10 +14,11 @@ export default function ReportPage() {
   const [PDFComponents, setPDFComponents] = useState(null);
   const [PrescriptionDoc, setPrescriptionDoc] = useState(null);
   const [prescriptionData, setPrescriptionData] = useState(null);
+  const [latestBP, setLatestBP] = useState(null);
 
   useEffect(() => {
     setIsClient(true);
-    
+
     // Import PDF components only on client side
     import("@react-pdf/renderer").then((mod) => {
       setPDFComponents({
@@ -34,14 +35,45 @@ export default function ReportPage() {
     const storedData = sessionStorage.getItem('prescriptionData');
     if (storedData) {
       const prescription = JSON.parse(storedData);
-      
+
+      // Fetch latest BP reading
+      if (patientProfile?.clerkUserId) {
+        fetch(`/api/patient/bp-readings?clerkId=${patientProfile.clerkUserId}`)
+          .then((res) => res.json())
+          .then((res) => {
+            if (res.success && res.readings.length > 0) {
+              // latest reading
+              setLatestBP(res.readings[res.readings.length - 1]);
+            }
+          });
+      }
+
+      const prescriptionDate = new Date(
+        prescription.approvedAt || prescription.createdAt
+      );
+
+      const nextVisitDate = new Date(
+        prescription.approvedAt || prescription.createdAt
+      );
+
+      nextVisitDate.setDate(nextVisitDate.getDate() + 14);
+
+      const formattedDate =
+        `${String(prescriptionDate.getDate()).padStart(2, "0")}` +
+        `${String(prescriptionDate.getMonth() + 1).padStart(2, "0")}` +
+        `${prescriptionDate.getFullYear()}`;
+
+      const prescriptionNumber = `RX-${formattedDate}-${prescription.id
+        ?.slice(-4)
+        .toUpperCase()}`;
+
       // Transform prescription data to match PDF format
       const transformedData = {
         doctor: {
           name: prescription.doctorName || "Doctor Name",
           qualification: "MBBS, MD",
           regNumber: "MCI-12345678",
-          specialization: "General Physician",
+          specialization: "Physician",
           hospital: "Neurova Healthcare Center",
           address: "Healthcare Plaza, India",
           phone: "+91 98765 43210",
@@ -51,19 +83,37 @@ export default function ReportPage() {
           name: patientProfile?.name || "Patient",
           age: patientProfile?.age || 0,
           gender: patientProfile?.gender || "N/A",
-          patientId: prescription._id?.slice(-8) || "P12345",
-          phone: patientProfile?.phone || "N/A",
-          address: "Patient Address",
-          weight: patientProfile?.weight ? `${patientProfile.weight} kg` : "N/A",
-          height: patientProfile?.height ? `${patientProfile.height} cm` : "N/A",
-          bloodGroup: "O+",
+          patientId: patientProfile?.clerkUserId
+            ? `PT-${patientProfile.clerkUserId.slice(-8).toUpperCase()}`
+            : "PT-UNKNOWN",
+
+          phone: patientProfile?.contact || "N/A",
+          bloodGroup: patientProfile?.bloodGroup || "N/A",
+
+          weight: patientProfile?.weight
+            ? `${patientProfile.weight} kg`
+            : "N/A",
+
+          height: patientProfile?.height
+            ? `${patientProfile.height} cm`
+            : "N/A",
+
+          bmi: patientProfile?.bmi ?? "N/A",
         },
         vitals: {
-          bp: `${prescription.systolic}/${prescription.diastolic} mmHg` || "N/A",
-          pulse: "N/A",
-          temp: "98.6°F",
-          spo2: "98%",
-          weight: patientProfile?.weight ? `${patientProfile.weight} kg` : "N/A",
+          bp: latestBP
+            ? `${latestBP.systolic}/${latestBP.diastolic} mmHg`
+            : "N/A",
+
+          pulse: latestBP?.pulse
+            ? `${latestBP.pulse} bpm`
+            : "N/A",
+
+          weight: patientProfile?.weight
+            ? `${patientProfile.weight} kg`
+            : "N/A",
+
+          bmi: patientProfile?.bmi ?? "N/A",
         },
         diagnosis: [
           `${prescription.stage} Hypertension`,
@@ -83,17 +133,47 @@ export default function ReportPage() {
           "Monitor BP regularly",
           "Follow-up visit recommended",
         ].filter(Boolean),
-        date: new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }),
-        nextVisit: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }),
-        prescriptionId: `RX-${prescription._id?.slice(-8)}`,
+        date: new Date(
+          prescription.approvedAt || prescription.createdAt
+        ).toLocaleDateString("en-IN", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+
+        nextVisit: nextVisitDate.toLocaleDateString("en-IN", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        prescriptionId: prescriptionNumber,
       };
-      
+
       setPrescriptionData(transformedData);
     } else {
       // If no data, redirect back to medications page
       router.push('/patient/medications');
     }
   }, [router, patientProfile, profileLoading]);
+
+  useEffect(() => {
+    if (!latestBP) return;
+
+    setPrescriptionData((prev) => {
+      if (!prev) return prev;
+
+      return {
+        ...prev,
+        vitals: {
+          ...prev.vitals,
+          bp: `${latestBP.systolic}/${latestBP.diastolic} mmHg`,
+          pulse: latestBP.pulse
+            ? `${latestBP.pulse} bpm`
+            : "N/A",
+        },
+      };
+    });
+  }, [latestBP]);
 
   if (!prescriptionData || profileLoading) {
     return (
@@ -211,7 +291,7 @@ export default function ReportPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <button
                 onClick={() => setShowPreview(!showPreview)}
-                className="group relative overflow-hidden bg-linear-to-r from-purple-500 via-pink-500 to-rose-500 hover:from-purple-600 hover:via-pink-600 hover:to-rose-600 text-white font-bold py-5 px-8 rounded-xl shadow-xl shadow-purple-500/30 hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-[1.02]"
+                className="cursor-pointer group relative w-full overflow-hidden bg-linear-to-r from-cyan-500 via-teal-500 to-green-500 hover:from-cyan-600 hover:via-teal-600 hover:to-green-600 text-white font-bold py-5 px-8 rounded-xl shadow-xl shadow-cyan-500/30 hover:shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02]"
               >
                 <div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/25 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                 <div className="flex items-center justify-center gap-3 relative z-10">
@@ -237,7 +317,7 @@ export default function ReportPage() {
                   {({ loading }) => (
                     <button
                       disabled={loading}
-                      className="group relative w-full overflow-hidden bg-linear-to-r from-cyan-500 via-teal-500 to-green-500 hover:from-cyan-600 hover:via-teal-600 hover:to-green-600 text-white font-bold py-5 px-8 rounded-xl shadow-xl shadow-cyan-500/30 hover:shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02]"
+                      className="cursor-pointer group relative w-full overflow-hidden bg-linear-to-r from-cyan-500 via-teal-500 to-green-500 hover:from-cyan-600 hover:via-teal-600 hover:to-green-600 text-white font-bold py-5 px-8 rounded-xl shadow-xl shadow-cyan-500/30 hover:shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02]"
                     >
                       <div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/25 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                       <div className="flex items-center justify-center gap-3 relative z-10">
@@ -296,7 +376,7 @@ export default function ReportPage() {
                 </div>
                 <button
                   onClick={() => setShowPreview(false)}
-                  className="p-2 rounded-lg bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 transition-colors"
+                  className="cursor-pointer p-2 rounded-lg bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 transition-colors"
                 >
                   <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

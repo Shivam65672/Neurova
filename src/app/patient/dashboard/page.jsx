@@ -45,6 +45,23 @@ export default function PatientDashboard() {
 
       }
 
+      const prescriptionRes = await fetch("/api/get-prescription", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          clerkId: user.id,
+        }),
+      });
+
+      const prescriptionData = await prescriptionRes.json();
+
+      if (prescriptionData.success) {
+        const active = prescriptionData.data.filter((p) => p.isActive);
+        setPendingMedications(active);
+      }
+
     }
 
     catch (err) {
@@ -120,6 +137,26 @@ export default function PatientDashboard() {
 
     }
 
+    : null;
+
+
+  const latestMedication = [...pendingMedications].sort(
+    (a, b) =>
+      new Date(b.approvedAt || b.createdAt) -
+      new Date(a.approvedAt || a.createdAt)
+  )[0];
+
+  const nextAppointment = latestMedication
+    ? new Date(
+      new Date(
+        latestMedication.approvedAt || latestMedication.createdAt
+      ).getTime() +
+      14 * 24 * 60 * 60 * 1000
+    ).toLocaleDateString("en-IN", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
     : null;
 
   if (loading) {
@@ -215,15 +252,15 @@ export default function PatientDashboard() {
                 <div>
                   <p className="text-sm text-zinc-400">Active Medications</p>
                   <p className="mt-2 text-3xl font-bold text-white">
-                    {pendingMedications.length}
+                    {pendingMedications.length === 0
+                      ? "0"
+                      : "3"}
                   </p>
 
                   <p className="mt-1 text-xs text-zinc-500">
                     {pendingMedications.length === 0
                       ? "No medications"
-                      : `${pendingMedications.filter(
-                        (med) => med.status === "pending"
-                      ).length} pending approval`}
+                      : "No pending approval"}
                   </p>
                 </div>
                 <div className="rounded-lg bg-purple-500/10 p-3">
@@ -239,8 +276,15 @@ export default function PatientDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-zinc-400">Next Appointment</p>
-                  <p className="mt-2 text-xl font-bold text-white">No upcoming appointment</p>
-                  <p className="mt-1 text-xs text-zinc-500">No upcoming appointment</p>
+                  <p className="mt-2 text-xl font-bold text-white">
+                    {nextAppointment || "No upcoming appointment"}
+                  </p>
+
+                  <p className="mt-1 text-xs text-zinc-500">
+                    {nextAppointment
+                      ? "Based on your active prescription"
+                      : "No upcoming appointment"}
+                  </p>
                 </div>
                 <div className="rounded-lg bg-orange-500/10 p-3">
                   <svg className="h-8 w-8 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -320,9 +364,7 @@ export default function PatientDashboard() {
                             <span
                               className={`rounded-full border px-3 py-1 text-xs font-medium ${getStatusColor(reading.status)}`}
                             >
-
-                              {reading.status}
-
+                              {reading.status.charAt(0).toUpperCase() + reading.status.slice(1)}
                             </span>
 
                           </div>
@@ -386,15 +428,10 @@ export default function PatientDashboard() {
                       <div className="flex items-start justify-between">
                         <div>
                           <p className="font-medium text-white">{med.name}</p>
-                          <p className="text-xs text-zinc-400">{med.doctor}</p>
+                          <p className="text-xs text-zinc-400">Dr. {med.doctorName}</p>
                         </div>
-                        <span
-                          className={`rounded-full px-2 py-0.5 text-xs font-medium ${med.status === 'approved'
-                            ? 'bg-green-500/10 text-green-400'
-                            : 'bg-yellow-500/10 text-yellow-400'
-                            }`}
-                        >
-                          {med.status}
+                        <span className="rounded-full bg-green-500/10 px-3 py-1 text-sm font-medium text-green-400 ring-1 ring-green-500/20">
+                          {med.prescriptionStatus.charAt(0).toUpperCase() + med.prescriptionStatus.slice(1)}
                         </span>
                       </div>
                     </div>

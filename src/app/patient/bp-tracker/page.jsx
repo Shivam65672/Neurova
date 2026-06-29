@@ -229,13 +229,13 @@ export default function BPTracker() {
                   <button
                     type="button"
                     onClick={() => setShowAddForm(false)}
-                    className="rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 transition-colors"
+                    className="cursor-pointer rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="rounded-lg bg-linear-to-r from-cyan-500 to-teal-600 px-4 py-2 text-sm font-semibold text-white hover:from-cyan-600 hover:to-teal-700 transition-all"
+                    className="cursor-pointer rounded-lg bg-linear-to-r from-cyan-500 to-teal-600 px-4 py-2 text-sm font-semibold text-white hover:from-cyan-600 hover:to-teal-700 transition-all"
                   >
                     Save Reading
                   </button>

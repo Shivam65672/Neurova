@@ -38,8 +38,7 @@ export async function POST(req) {
     ) {
       updateObject.prescriptionStatus = "approved";
 
-      updateObject.doctorName =
-        doctorName || "Verified Doctor";
+      updateObject.doctorName = doctorName;
 
       updateObject.approvedAt = new Date();
     }

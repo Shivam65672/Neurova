@@ -65,7 +65,7 @@ export default function SymptomsPage() {
   const fetchSavedSymptoms = async () => {
     try {
       const res = await fetch(
-        `/api/user-symptoms?clerkUserId=${user.id}`
+        `/api/patient/symptoms?clerkUserId=${user.id}`
       );
       const data = await res.json();
       if (data?.symptoms?.length) {
@@ -85,7 +85,7 @@ export default function SymptomsPage() {
   };
 
   const saveSymptoms = async () => {
-    const res = await fetch("/api/user-symptoms", {
+    const res = await fetch("/api/patient/symptoms", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -175,14 +175,14 @@ export default function SymptomsPage() {
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
               <button
                 onClick={handleSave}
-                className="rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-4 py-2 text-sm font-medium text-cyan-400 hover:bg-cyan-500/20 transition-all"
+                className="cursor-pointer rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-4 py-2 text-sm font-medium text-cyan-400 hover:bg-cyan-500/20 transition-all"
               >
                 💾 Save Symptoms
               </button>
               <button
                 onClick={handleGeneratePrescription}
                 disabled={generating}
-                className="rounded-lg border border-teal-500/40 bg-linear-to-r from-cyan-600 to-teal-600 px-4 py-2 text-sm font-semibold text-white hover:from-cyan-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="cursor-pointer rounded-lg border border-teal-500/40 bg-linear-to-r from-cyan-600 to-teal-600 px-4 py-2 text-sm font-semibold text-white hover:from-cyan-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {generating ? "⏳ Generating..." : "💊 Generate Prescription"}
               </button>

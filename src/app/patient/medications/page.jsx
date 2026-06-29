@@ -12,6 +12,7 @@ export default function MedicationsPage() {
   const [medications, setMedications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [schedules, setSchedules] = useState({});
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     if (!isSignedIn || !user) return;
@@ -26,19 +27,44 @@ export default function MedicationsPage() {
         });
 
         const data = await res.json();
+
         if (data.success) {
-          const activePrescription = data.data.find(
-            p =>
-              p.prescriptionStatus?.toLowerCase() ===
-              "approved" &&
-              p.isActive === true
+          const approvedPrescriptions = data.data
+            .filter(p => p.prescriptionStatus === "approved")
+            .sort(
+              (a, b) =>
+                new Date(b.createdAt) -
+                new Date(a.createdAt)
+            );
+
+          setHistory(approvedPrescriptions);
+
+          const active =
+            approvedPrescriptions.find(
+              p => p.isActive
+            ) || approvedPrescriptions[0];
+
+          setMedications(active ? [active] : []);
+
+          const scheduleRes = await fetch(
+            `/api/patient/prescription/medication-schedule?clerkId=${clerkId}&prescriptionId=${active.id}`
           );
 
-          setMedications(
-            activePrescription
-              ? [activePrescription]
-              : []
-          );
+          const scheduleData = await scheduleRes.json();
+
+          if (scheduleData.success) {
+            const mapped = {};
+
+            scheduleData.data.forEach((item) => {
+              mapped[item.medicationName] = {
+                id: item._id,
+                schedule: item.schedule,
+              };
+            });
+
+            setSchedules(mapped);
+          }
+
         }
       } catch (err) {
         console.error('Error fetching prescriptions:', err);
@@ -50,71 +76,93 @@ export default function MedicationsPage() {
     fetchMedications();
   }, [isSignedIn, user]);
 
-  // ✅ Create 7-day medication schedule (with localStorage persistence)
-  const createSchedule = (medicationName) => {
-    const plan = [];
-    const now = new Date();
-
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(now);
-      date.setDate(now.getDate() + i);
-
-      const morning = {
-        date: date.toDateString(),
-        time: '8:30 AM',
-        period: 'Morning',
-        taken: false,
-      };
-      const evening = {
-        date: date.toDateString(),
-        time: '8:30 PM',
-        period: 'Evening',
-        taken: false,
-      };
-
-      plan.push(morning, evening);
-    }
-
-    const updatedSchedules = {
-      ...schedules,
-      [medicationName]: plan,
-    };
-
-    setSchedules(updatedSchedules);
-    localStorage.setItem('medicationSchedules', JSON.stringify(updatedSchedules));
-
-    alert(`✅ 7-day schedule set for ${medicationName}`);
-  };
-
-  // ✅ Toggle medicine taken checkbox (and save to localStorage)
-  const toggleTaken = (medicationName, index) => {
-    setSchedules((prev) => {
-      const updated = { ...prev };
-      updated[medicationName][index].taken = !updated[medicationName][index].taken;
-
-      localStorage.setItem('medicationSchedules', JSON.stringify(updated));
-      return updated;
+  // ✅ Create 7-day medication schedule
+  const createSchedule = async (prescriptionId, medicationName) => {
+    const res = await fetch("/api/patient/prescription/medication-schedule", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        clerkId: user.id,
+        prescriptionId,
+        medicationName,
+      }),
     });
+
+    const data = await res.json();
+
+    if (data.success) {
+      setSchedules((prev) => ({
+        ...prev,
+        [medicationName]: {
+          id: data.data._id,
+          schedule: data.data.schedule,
+        },
+      }));
+    }
   };
 
-  // ✅ Load from localStorage on page load
-  useEffect(() => {
-    const stored = localStorage.getItem('medicationSchedules');
-    if (stored) {
-      setSchedules(JSON.parse(stored));
+  // ✅ Toggle medicine taken checkbox
+  const toggleTaken = async (
+    medicationName,
+    index
+  ) => {
+    const current =
+      schedules[medicationName];
+
+    const updatedTaken =
+      !current.schedule[index].taken;
+
+    const res = await fetch(
+      "/api/patient/prescription/medication-schedule",
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          scheduleId: current.id,
+          index,
+          taken: updatedTaken,
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.success) {
+      setSchedules((prev) => ({
+        ...prev,
+        [medicationName]: {
+          id: data.data._id,
+          schedule: data.data.schedule,
+        },
+      }));
     }
-  }, []);
+  };
 
   // ✅ Handle prescription PDF redirect
   const handleGetPrescription = (prescription) => {
     sessionStorage.setItem('prescriptionData', JSON.stringify(prescription));
-    router.push('/patient/report');
+    router.push('/patient/medications/report');
   };
 
   if (!isSignedIn)
     return <div className="text-white p-4">Please sign in to view your medications.</div>;
   if (loading)
     return <div className="text-white p-4">Loading medications...</div>;
+
+  const formatDate = (date) => {
+    if (!date) return "Pending Approval";
+
+    return new Date(date).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
 
   return (
     <>
@@ -167,25 +215,21 @@ export default function MedicationsPage() {
                       <p className="mt-1 text-sm text-zinc-400">
                         Doctor:
                         <span className="ml-2 font-semibold text-white">
-                          {prescription.doctorName || "Awaiting Doctor Approval"}
+                          {prescription.doctorName ?? "Awaiting Doctor Approval"}
                         </span>
                       </p>
 
                       <p className="mt-1 text-sm text-zinc-400">
                         Prescription Date:
                         <span className="ml-2 font-semibold text-white">
-                          {prescription.approvedAt
-                            ? new Date(
-                              prescription.approvedAt
-                            ).toLocaleDateString()
-                            : "Pending Approval"}
+                          {formatDate(prescription.approvedAt)}
                         </span>
                       </p>
                     </div>
 
                     <button
                       onClick={() => handleGetPrescription(prescription)}
-                      className="group/btn relative overflow-hidden rounded-xl bg-gradient-to-r from-cyan-500 to-teal-600 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/40"
+                      className="cursor-pointer group/btn relative overflow-hidden rounded-xl bg-gradient-to-r from-cyan-500 to-teal-600 px-6 py-3 font-semibold text-white shadow-lg shadow-cyan-500/30 transition-all hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/40"
                     >
                       <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/25 to-white/0 -translate-x-full transition-transform duration-700 group-hover/btn:translate-x-full"></div>
                       <div className="relative flex items-center gap-2">
@@ -212,22 +256,28 @@ export default function MedicationsPage() {
                       <div key={`${med}-${idx}`} className="mb-3 rounded-lg bg-zinc-900/50 p-3">
                         <p className="font-medium text-white flex items-center justify-between">
                           {med}
-                          <button
-                            onClick={() => createSchedule(med)}
-                            className="ml-3 rounded-lg bg-cyan-600 px-3 py-1 text-xs font-semibold text-white hover:bg-cyan-700 transition"
-                          >
-                            Set 7-Day Schedule
-                          </button>
+                          {!schedules[med] ? (
+                            <button
+                              onClick={() => createSchedule(prescription.id, med)}
+                              className="cursor-pointer ml-3 rounded-lg bg-cyan-600 px-3 py-1 text-xs font-semibold text-white hover:bg-cyan-700 transition"
+                            >
+                              Set 7-Day Schedule
+                            </button>
+                          ) : (
+                            <span className="text-green-400 text-sm font-medium">
+                              ✓ Schedule Created
+                            </span>
+                          )}
                         </p>
 
                         {/* Schedule display */}
-                        {schedules[med] && (
+                        {schedules[med]?.schedule && (
                           <div className="mt-3 rounded-lg bg-zinc-800/40 p-3">
                             <div className="grid grid-cols-2 gap-4">
                               {/* Morning Column */}
                               <div>
                                 <h4 className="text-cyan-400 font-semibold mb-1">🌅 Morning</h4>
-                                {schedules[med]
+                                {schedules[med]?.schedule
                                   .filter((slot) => slot.period === 'Morning')
                                   .map((slot, i) => (
                                     <label
@@ -239,7 +289,7 @@ export default function MedicationsPage() {
                                           type="checkbox"
                                           checked={slot.taken}
                                           onChange={() =>
-                                            toggleTaken(med, schedules[med].indexOf(slot))
+                                            toggleTaken(med, schedules[med].schedule.indexOf(slot))
                                           }
                                           className="w-5 h-5 cursor-pointer accent-green-500"
                                         />
@@ -253,7 +303,7 @@ export default function MedicationsPage() {
                               {/* Evening Column */}
                               <div>
                                 <h4 className="text-teal-400 font-semibold mb-1">🌇 Evening</h4>
-                                {schedules[med]
+                                {schedules[med].schedule
                                   .filter((slot) => slot.period === 'Evening')
                                   .map((slot, i) => (
                                     <label
@@ -265,7 +315,7 @@ export default function MedicationsPage() {
                                           type="checkbox"
                                           checked={slot.taken}
                                           onChange={() =>
-                                            toggleTaken(med, schedules[med].indexOf(slot))
+                                            toggleTaken(med, schedules[med].schedule.indexOf(slot))
                                           }
                                           className="w-5 h-5 cursor-pointer accent-green-500"
                                         />
@@ -333,6 +383,49 @@ export default function MedicationsPage() {
                   </div>
                 </div>
               ))
+            )}
+            {/* Prescription History */}
+            {history.length > 1 && (
+              <div className="mt-10 border-t border-zinc-800 pt-8">
+                <h3 className="mb-5 text-2xl font-bold text-white">
+                  📜 Prescription History
+                </h3>
+
+                <div className="space-y-3">
+                  {history.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900/40 p-4"
+                    >
+                      <div>
+                        <p className="mt-1 text-sm text-zinc-400">
+                          Prescription Date:
+                          <span className="ml-2 font-semibold text-white">
+                            {formatDate(item.approvedAt)}
+                          </span>
+                        </p>
+                        <p className="mt-1 text-sm text-zinc-400">
+                          Stage: <span className="font-semibold text-cyan-400">{item.stage}</span>
+                        </p>
+                        <p className="mt-1 text-sm text-zinc-400">
+                          Doctor:
+                          <span className="ml-2 font-semibold text-white">
+                            {item.doctorName ?? "Awaiting Doctor Approval"}
+                          </span>
+                        </p>
+
+                      </div>
+
+                      <button
+                        onClick={() => handleGetPrescription(item)}
+                        className="cursor-pointer rounded-lg bg-cyan-600 px-4 py-2 text-white transition hover:bg-cyan-700"
+                      >
+                        View PDF
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
         </div>

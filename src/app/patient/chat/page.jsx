@@ -29,7 +29,7 @@ export default function ChatPage() {
       <div className="min-h-screen bg-black">
         <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-white">AI Assistant</h1>
+          <h1 className="text-3xl font-bold text-white">Neurova AI Health Assistant</h1>
           <p className="mt-2 text-zinc-400">Ask the assistant about your readings, medications, or general advice. Always confirm prescriptions with a doctor.</p>
         </div>
 

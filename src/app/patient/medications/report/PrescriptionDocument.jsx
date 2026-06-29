@@ -343,7 +343,7 @@ const PrescriptionDocument = ({ data }) => {
         </View>
 
         {/* Patient Information */}
-        <View style={styles.patientSection}>
+        <View style={styles.patientInfoSection}>
           <Text style={styles.sectionTitle}>Patient Information</Text>
           <View style={styles.patientGrid}>
             <View style={styles.patientField}>
@@ -388,16 +388,16 @@ const PrescriptionDocument = ({ data }) => {
               <Text style={styles.fieldValue}>{data.vitals.pulse}</Text>
             </View>
             <View style={styles.vitalItem}>
-              <Text style={styles.fieldLabel}>Temp</Text>
-              <Text style={styles.fieldValue}>{data.vitals.temp}</Text>
-            </View>
-            <View style={styles.vitalItem}>
-              <Text style={styles.fieldLabel}>SpO2</Text>
-              <Text style={styles.fieldValue}>{data.vitals.spo2}</Text>
-            </View>
-            <View style={styles.vitalItem}>
               <Text style={styles.fieldLabel}>Weight</Text>
               <Text style={styles.fieldValue}>{data.vitals.weight}</Text>
+            </View>
+            <View style={styles.vitalItem}>
+              <Text style={styles.fieldLabel}>Height</Text>
+              <Text style={styles.fieldValue}>{data.patient.height}</Text>
+            </View>
+            <View style={styles.vitalItem}>
+              <Text style={styles.fieldLabel}>BMI</Text>
+              <Text style={styles.fieldValue}>{data.patient.bmi}</Text>
             </View>
           </View>
         </View>
@@ -468,7 +468,7 @@ const PrescriptionDocument = ({ data }) => {
           <View style={styles.signatureSection}>
             {/* QR Code for Doctor Profile */}
             <View style={styles.qrSection}>
-              <Image 
+              <Image
                 style={styles.qrCode}
                 src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
                   JSON.stringify({
@@ -484,7 +484,7 @@ const PrescriptionDocument = ({ data }) => {
               />
               <Text style={styles.qrLabel}>Scan for Doctor's Profile</Text>
             </View>
-            
+
             {/* Doctor Signature */}
             <View style={styles.signatureBox}>
               <Text style={styles.signatureLabel}>Doctor's Signature</Text>
@@ -500,7 +500,7 @@ const PrescriptionDocument = ({ data }) => {
             </View>
           </View>
           <Text style={styles.disclaimer}>
-            This is a computer-generated prescription. This prescription is valid for {data.medications[0]?.duration || '30 days'} from the date of issue. 
+            This is a computer-generated prescription. This prescription is valid for {data.medications[0]?.duration || '30 days'} from the date of issue.
             In case of any emergency, please contact the hospital immediately. Keep all medicines out of reach of children.
           </Text>
         </View>

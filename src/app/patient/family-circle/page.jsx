@@ -276,7 +276,7 @@ export default function FamilyCirclePage() {
           <div className="fixed bottom-8 right-8 z-50">
             <button
               onClick={() => router.push('/patient/family-circle/emergency-sos')}
-              className="group relative flex h-20 w-20 items-center justify-center rounded-full bg-linear-to-br from-red-500 to-orange-500 text-3xl shadow-2xl shadow-red-500/50 transition-all hover:scale-110 hover:shadow-red-500/70 active:scale-95"
+              className="cursor-pointer group relative flex h-20 w-20 items-center justify-center rounded-full bg-linear-to-br from-red-500 to-orange-500 text-3xl shadow-2xl shadow-red-500/50 transition-all hover:scale-110 hover:shadow-red-500/70 active:scale-95"
             >
               <span className="animate-pulse">🚨</span>
               <div className="absolute -inset-2 animate-ping rounded-full bg-red-500/50 opacity-75"></div>

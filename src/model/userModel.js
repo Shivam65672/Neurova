@@ -27,6 +27,16 @@ const userProfileSchema = new mongoose.Schema(
       max: 120,
     },
 
+    contact: {
+      type: String,
+      default: "Unknown",
+    },
+
+    bloodGroup: {
+      type: String,
+      default: "Unknown",
+    },
+
     height: {
       type: Number, // cm
       required: true,

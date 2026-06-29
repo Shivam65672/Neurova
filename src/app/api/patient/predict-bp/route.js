@@ -218,15 +218,19 @@ Respond **ONLY** in the following EXACT JSON format:
       clerkId,
       patientName: profile.name,
       patientAge: profile.age,
+
       stage: prediction.stage,
       medications: prediction.top3_medications,
       diet: prediction.diet,
       dosage: prediction.dosage,
       usage: prediction.usage,
       exercise: prediction.exercise,
+
       prescriptionStatus: "pending",
+
       doctorName: null,
       approvedAt: null,
+
       isActive: true,
     });
 

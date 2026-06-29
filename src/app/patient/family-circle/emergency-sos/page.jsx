@@ -193,7 +193,7 @@ const [emergencyContacts,setEmergencyContacts] = useState([]);
                 <button
                   onClick={activateSOS}
                   disabled={loadingLocation}
-                  className="group relative mx-auto flex h-48 w-48 items-center justify-center rounded-full bg-linear-to-br from-red-500 to-orange-500 text-6xl shadow-2xl shadow-red-500/50 transition-all hover:scale-110 hover:shadow-red-500/70 active:scale-95 disabled:opacity-50"
+                  className="cursor-pointer group relative mx-auto flex h-48 w-48 items-center justify-center rounded-full bg-linear-to-br from-red-500 to-orange-500 text-6xl shadow-2xl shadow-red-500/50 transition-all hover:scale-110 hover:shadow-red-500/70 active:scale-95 disabled:opacity-50"
                 >
                   <span className="relative z-10">🆘</span>
                   <div className="absolute inset-0 animate-ping rounded-full bg-red-500/50 opacity-75"></div>
@@ -224,7 +224,7 @@ const [emergencyContacts,setEmergencyContacts] = useState([]);
                     {/* Cancel Button */}
                     <button
                       onClick={cancelSOS}
-                      className="rounded-xl border-2 border-zinc-700 bg-zinc-800 px-12 py-4 text-xl font-semibold text-white transition-all hover:bg-zinc-700"
+                      className="cursor-pointer rounded-xl border-2 border-zinc-700 bg-zinc-800 px-12 py-4 text-xl font-semibold text-white transition-all hover:bg-zinc-700"
                     >
                       ✕ Cancel Emergency SOS
                     </button>
@@ -315,13 +315,13 @@ const [emergencyContacts,setEmergencyContacts] = useState([]);
                     <div className="mt-8 flex gap-4">
                       <button
                         onClick={() => router.push('/patient/dashboard')}
-                        className="flex-1 rounded-xl border border-zinc-700 px-6 py-4 font-semibold text-white transition-all hover:bg-zinc-800"
+                        className="cursor-pointer flex-1 rounded-xl border border-zinc-700 px-6 py-4 font-semibold text-white transition-all hover:bg-zinc-800"
                       >
                         Return to Dashboard
                       </button>
                       <button
                         onClick={() => router.push('/patient/family-circle')}
-                        className="flex-1 rounded-xl bg-teal-500 px-6 py-4 font-semibold text-white transition-all hover:bg-teal-600"
+                        className="cursor-pointer flex-1 rounded-xl bg-teal-500 px-6 py-4 font-semibold text-white transition-all hover:bg-teal-600"
                       >
                         View Family Circle
                       </button>

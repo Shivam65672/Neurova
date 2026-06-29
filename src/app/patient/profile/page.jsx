@@ -42,6 +42,8 @@ export default function UserProfilePage() {
       name: user?.fullName || "",
       gender: "Other",
       age: 0,
+      contact: "Unknown",
+      bloodGroup: "Unknown",
       height: 0,
       weight: 0,
       bmi: 0,
@@ -184,8 +186,8 @@ export default function UserProfilePage() {
             <button
               onClick={() => (editing ? handleSave() : setEditing(true))}
               className={`rounded-lg cursor-pointer border border-cyan-500/40 bg-cyan-500/10 px-4 py-2 text-sm font-medium transition-all ${editing
-                  ? "text-green-400 hover:bg-green-500/20"
-                  : "text-cyan-400 hover:bg-cyan-500/20"
+                ? "text-green-400 hover:bg-green-500/20"
+                : "text-cyan-400 hover:bg-cyan-500/20"
                 }`}
             >
               {editing ? "💾 Save" : "✏️ Edit Profile"}
@@ -201,10 +203,23 @@ export default function UserProfilePage() {
                 ["name", "Full Name"],
                 ["gender", "Gender", "select", ["Male", "Female", "Other"]],
                 ["age", "Age", "number"],
+                ["contact", "Contact"],
+                ["bloodGroup", "Blood Group", "select", [
+                  "Unknown",
+                  "A+",
+                  "A-",
+                  "B+",
+                  "B-",
+                  "AB+",
+                  "AB-",
+                  "O+",
+                  "O-",
+                ]],
                 ["height", "Height (cm)", "number"],
                 ["weight", "Weight (kg)", "number"],
                 ["bmi", "BMI", "number"],
-              ].map((f) => renderField(...f))}
+              ].map((f) => renderField(...f))
+            }
             </div>
 
             {/* Lifestyle Info */}

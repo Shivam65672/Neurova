@@ -62,9 +62,12 @@ export default function DocNav() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <div className="min-w-0">
-                <span className="block truncate text-xl font-bold text-white sm:text-2xl">Neurova</span>
-                <span className="hidden rounded-full bg-teal-500/20 px-2.5 py-0.5 text-xs font-medium text-teal-400 ring-1 ring-teal-500/30 sm:ml-2 sm:inline">
+              <div className="flex flex-col items-start">
+                <span className="text-2xl font-bold leading-none text-white">
+                  Neurova
+                </span>
+
+                <span className="mt-1 inline-flex rounded-full bg-cyan-500/20 px-2.5 py-0.5 text-xs font-medium text-cyan-400 ring-1 ring-cyan-500/30">
                   Doctor Portal
                 </span>
               </div>
@@ -80,17 +83,15 @@ export default function DocNav() {
                   <Link
                     key={link.name}
                     href={link.href}
-                    className={`group relative rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
-                      isActive
+                    className={`group relative rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${isActive
                         ? 'bg-linear-to-r from-teal-500/20 to-emerald-500/20 text-teal-400 shadow-lg shadow-teal-500/10 ring-1 ring-teal-500/20'
                         : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-white'
-                    }`}
+                      }`}
                   >
                     {link.name}
                     {link.badge !== undefined && link.badge > 0 && (
-                      <span className={`absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold text-white ring-2 ring-black ${
-                        link.isCritical ? 'bg-red-500 animate-pulse' : 'bg-orange-500'
-                      }`}>
+                      <span className={`absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold text-white ring-2 ring-black ${link.isCritical ? 'bg-red-500 animate-pulse' : 'bg-orange-500'
+                        }`}>
                         {link.badge > 99 ? '99+' : link.badge}
                       </span>
                     )}
@@ -140,8 +141,8 @@ export default function DocNav() {
         <div className="border-t border-zinc-800/50 bg-black/95 backdrop-blur-xl md:hidden">
           <div className="space-y-1 px-3 pb-4 pt-3">
             {/* Mobile Profile Section */}
-            <Link 
-              href="/doctor/profile" 
+            <Link
+              href="/doctor/profile"
               className="flex items-center space-x-3 rounded-xl bg-zinc-800/30 px-4 py-3 mb-3"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -164,18 +165,16 @@ export default function DocNav() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`flex items-center justify-between rounded-xl px-4 py-3 text-base font-medium transition-all ${
-                    isActive
+                  className={`flex items-center justify-between rounded-xl px-4 py-3 text-base font-medium transition-all ${isActive
                       ? 'bg-linear-to-r from-teal-500/20 to-emerald-500/20 text-teal-400 shadow-lg shadow-teal-500/10 ring-1 ring-teal-500/20'
                       : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-white'
-                  }`}
+                    }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span>{link.name}</span>
                   {link.badge !== undefined && link.badge > 0 && (
-                    <span className={`ml-2 flex h-6 min-w-6 items-center justify-center rounded-full px-2 text-xs font-bold text-white ${
-                      link.isCritical ? 'bg-red-500 animate-pulse' : 'bg-orange-500'
-                    }`}>
+                    <span className={`ml-2 flex h-6 min-w-6 items-center justify-center rounded-full px-2 text-xs font-bold text-white ${link.isCritical ? 'bg-red-500 animate-pulse' : 'bg-orange-500'
+                      }`}>
                       {link.badge > 99 ? '99+' : link.badge}
                     </span>
                   )}

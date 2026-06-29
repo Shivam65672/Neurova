@@ -42,9 +42,15 @@ const BPPredictionSchema = new mongoose.Schema(
     },
     prescriptionStatus: {
       type: String,
-      enum: ["pending", "approved", "dispensed"],
+      enum: [
+        "pending",
+        "approved",
+        "rejected",
+        "dispensed"
+      ],
       default: "pending",
     },
+
     datePredicted: {
       type: Date,
       default: Date.now,
@@ -53,9 +59,15 @@ const BPPredictionSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+
     approvedAt: {
       type: Date,
       default: null,
+    },
+
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }

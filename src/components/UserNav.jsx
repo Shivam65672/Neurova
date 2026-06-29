@@ -18,7 +18,6 @@ export default function UserNav() {
     { name: 'Medications', href: '/patient/medications' },
     { name: 'Family Circle', href: '/patient/family-circle' },
     { name: 'OCR Scan', href: '/patient/ocr' },
-    { name: 'Profile', href: '/patient/profile' },
   ];
 
   return (
@@ -33,9 +32,11 @@ export default function UserNav() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               </div>
-              <div>
-                <span className="text-2xl font-bold text-white">Neurova</span>
-                <span className="ml-2 rounded-full bg-cyan-500/20 px-2.5 py-0.5 text-xs font-medium text-cyan-400 ring-1 ring-cyan-500/30">
+              <div className="flex flex-col items-start">
+                <span className="text-2xl font-bold leading-none text-white">
+                  Neurova
+                </span>
+                <span className="mt-1 inline-flex rounded-full bg-cyan-500/20 px-2.5 py-0.5 text-xs font-medium text-cyan-400 ring-1 ring-cyan-500/30">
                   Patient Portal
                 </span>
               </div>
@@ -51,11 +52,10 @@ export default function UserNav() {
                   <Link
                     key={link.name}
                     href={link.href}
-                    className={`group rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
-                      isActive
+                    className={`group rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${isActive
                         ? 'bg-linear-to-r from-cyan-500/20 to-teal-500/20 text-cyan-400 shadow-lg shadow-cyan-500/10 ring-1 ring-cyan-500/20'
                         : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-white'
-                    }`}
+                      }`}
                   >
                     {link.name}
                   </Link>
@@ -102,8 +102,8 @@ export default function UserNav() {
         <div className="border-t border-zinc-800/50 bg-black/95 backdrop-blur-xl md:hidden">
           <div className="space-y-1 px-3 pb-4 pt-3">
             {/* Mobile Profile Section */}
-            <Link 
-              href="/patient/profile" 
+            <Link
+              href="/patient/profile"
               className="flex items-center space-x-3 rounded-xl bg-zinc-800/30 px-4 py-3 mb-3"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -124,11 +124,10 @@ export default function UserNav() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`flex items-center rounded-xl px-4 py-3 text-base font-medium transition-all ${
-                    isActive
+                  className={`flex items-center rounded-xl px-4 py-3 text-base font-medium transition-all ${isActive
                       ? 'bg-linear-to-r from-cyan-500/20 to-teal-500/20 text-cyan-400 shadow-lg shadow-cyan-500/10 ring-1 ring-cyan-500/20'
                       : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-white'
-                  }`}
+                    }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span>{link.name}</span>

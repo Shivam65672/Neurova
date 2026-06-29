@@ -5,8 +5,11 @@ import { useParams, useRouter } from 'next/navigation';
 import DocNav from '@/components/DocNav';
 import DocFooter from '@/components/DocFooter';
 import { useDoctorProfile } from '@/hooks/useDoctorProfile';
+import { useUser } from "@clerk/nextjs";
+
 
 export default function PrescriptionReview() {
+  const { user } = useUser();
   const params = useParams();
   const router = useRouter();
   const [prescription, setPrescription] = useState(null);
@@ -63,7 +66,7 @@ export default function PrescriptionReview() {
         body: JSON.stringify({
           id: prescription._id,
           prescriptionStatus: "approved",
-          doctorName: doctorProfile?.name || "Verified Doctor",
+          doctorName: user.fullName, // or doctor's name
         }),
       });
 
