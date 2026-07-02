@@ -12,12 +12,24 @@ export default function DoctorPrescriptions() {
     total: 0,
     pending: 0,
     approved: 0,
-    dispensed: 0,
+    rejected: 0,
     thisWeek: 0,
   });
   const [topMedications, setTopMedications] = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
   const router = useRouter();
+
+  // ✅ Scroll to top with delay to ensure content is loaded
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+    if (!loading) {
+      window.scrollTo(0, 0);
+    }
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   useEffect(() => {
     const fetchPrescriptions = async () => {
@@ -27,23 +39,23 @@ export default function DoctorPrescriptions() {
           headers: { 'Content-Type': 'application/json' },
         });
         const data = await res.json();
-        
+
         if (data.success) {
           setPrescriptions(data.data);
-          
+
           // Calculate stats
           const total = data.data.length;
           const pending = data.data.filter(p => p.prescriptionStatus === 'pending').length;
           const approved = data.data.filter(p => p.prescriptionStatus === 'approved').length;
-          const dispensed = data.data.filter(p => p.prescriptionStatus === 'dispensed').length;
-          
+          const rejected = data.data.filter(p => p.prescriptionStatus === 'rejected').length;
+
           // Calculate this week's prescriptions
           const oneWeekAgo = new Date();
           oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
           const thisWeek = data.data.filter(p => new Date(p.datePredicted) >= oneWeekAgo).length;
-          
-          setStats({ total, pending, approved, dispensed, thisWeek });
-          
+
+          setStats({ total, pending, approved, rejected, thisWeek });
+
           // Calculate top medications
           const medicationCount = {};
           data.data.forEach(p => {
@@ -51,14 +63,14 @@ export default function DoctorPrescriptions() {
               medicationCount[med] = (medicationCount[med] || 0) + 1;
             });
           });
-          
+
           const topMeds = Object.entries(medicationCount)
             .sort((a, b) => b[1] - a[1])
             .slice(0, 5)
             .map(([med, count]) => ({ medication: med, count }));
-          
+
           setTopMedications(topMeds);
-          
+
           // Get recent activity (last 5 prescriptions)
           const recent = data.data
             .sort((a, b) => new Date(b.datePredicted) - new Date(a.datePredicted))
@@ -74,7 +86,7 @@ export default function DoctorPrescriptions() {
               }),
               stage: p.stage,
             }));
-          
+
           setRecentActivity(recent);
         }
       } catch (err) {
@@ -93,8 +105,8 @@ export default function DoctorPrescriptions() {
         return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
       case 'approved':
         return 'text-green-400 bg-green-500/10 border-green-500/20';
-      case 'dispensed':
-        return 'text-blue-400 bg-blue-500/10 border-blue-500/20';
+      case 'rejected':
+        return 'text-red-400 bg-red-500/10 border-red-500/20';
       default:
         return 'text-zinc-400 bg-zinc-500/10 border-zinc-500/20';
     }
@@ -173,8 +185,8 @@ export default function DoctorPrescriptions() {
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">💊</span>
               </div>
-              <p className="text-sm text-zinc-400">Dispensed</p>
-              <p className="text-3xl font-bold text-blue-400 mt-1">{stats.dispensed}</p>
+              <p className="text-sm text-zinc-400">Rejected</p>
+              <p className="text-3xl font-bold text-red-400 mt-1">{stats.rejected}</p>
             </div>
 
             <div className="rounded-xl border border-zinc-800 bg-linear-to-br from-cyan-900/20 to-zinc-800/30 p-6">
@@ -210,14 +222,14 @@ export default function DoctorPrescriptions() {
                           <p className="font-medium text-white">{activity.patientName}</p>
                           <div className="flex items-center space-x-2 mt-1">
                             <span className={`text-xs font-medium ${getStageColor(activity.stage)}`}>
-                              {activity.stage}
+                              {activity.stage.charAt(0).toUpperCase() + activity.stage.slice(1)}
                             </span>
                             <span className="text-xs text-zinc-500">•</span>
                             <span className="text-xs text-zinc-400">{activity.date}</span>
                           </div>
                         </div>
                         <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${getStatusColor(activity.status)}`}>
-                          {activity.status}
+                          {activity.status.charAt(0).toUpperCase() + activity.status.slice(1)}
                         </span>
                       </div>
                     ))}
@@ -226,7 +238,7 @@ export default function DoctorPrescriptions() {
                 <div className="mt-4 pt-4 border-t border-zinc-800">
                   <button
                     onClick={() => router.push('/doctor/patients')}
-                    className="w-full text-center text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
+                    className="cursor-pointer w-full text-center text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
                   >
                     View All Prescriptions →
                   </button>
@@ -278,7 +290,7 @@ export default function DoctorPrescriptions() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <button
                 onClick={() => router.push('/doctor/patients')}
-                className="flex items-center space-x-4 p-4 rounded-lg border border-zinc-800 bg-black/50 hover:border-cyan-500/50 hover:bg-zinc-800/50 transition-all duration-200 text-left"
+                className="cursor-pointer flex items-center space-x-4 p-4 rounded-lg border border-zinc-800 bg-black/50 hover:border-cyan-500/50 hover:bg-zinc-800/50 transition-all duration-200 text-left"
               >
                 <div className="h-12 w-12 rounded-full bg-cyan-500/10 flex items-center justify-center shrink-0">
                   <span className="text-2xl">👥</span>
@@ -298,7 +310,7 @@ export default function DoctorPrescriptions() {
                     alert('No pending prescriptions to review');
                   }
                 }}
-                className="flex items-center space-x-4 p-4 rounded-lg border border-zinc-800 bg-black/50 hover:border-yellow-500/50 hover:bg-zinc-800/50 transition-all duration-200 text-left"
+                className="cursor-pointer flex items-center space-x-4 p-4 rounded-lg border border-zinc-800 bg-black/50 hover:border-yellow-500/50 hover:bg-zinc-800/50 transition-all duration-200 text-left"
               >
                 <div className="h-12 w-12 rounded-full bg-yellow-500/10 flex items-center justify-center shrink-0">
                   <span className="text-2xl">⚡</span>
@@ -311,7 +323,7 @@ export default function DoctorPrescriptions() {
 
               <button
                 onClick={() => router.push('/doctor/analytics')}
-                className="flex items-center space-x-4 p-4 rounded-lg border border-zinc-800 bg-black/50 hover:border-teal-500/50 hover:bg-zinc-800/50 transition-all duration-200 text-left"
+                className="cursor-pointer flex items-center space-x-4 p-4 rounded-lg border border-zinc-800 bg-black/50 hover:border-teal-500/50 hover:bg-zinc-800/50 transition-all duration-200 text-left"
               >
                 <div className="h-12 w-12 rounded-full bg-teal-500/10 flex items-center justify-center shrink-0">
                   <span className="text-2xl">📈</span>

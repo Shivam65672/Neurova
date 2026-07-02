@@ -34,7 +34,9 @@ const doctorProfileSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    default: "",
+    required: true,
+    unique: true,
+    index: true,
   },
   gender: {
     type: String,

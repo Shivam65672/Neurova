@@ -26,6 +26,18 @@ export default function DoctorProfile() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState(null);
 
+  // ✅ Scroll to top with delay to ensure content is loaded
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+    if (!loading) {
+      window.scrollTo(0, 0);
+    }
+    return () => clearTimeout(timer);
+  }, [loading]);
+
   useEffect(() => {
     if (isLoaded && user) {
       fetchDoctorProfile();
@@ -120,20 +132,20 @@ export default function DoctorProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       const res = await fetch("/api/doctor/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          ...formData, 
+        body: JSON.stringify({
+          ...formData,
           clerkUserId: user.id,
           email: user.emailAddresses?.[0]?.emailAddress || formData.email,
         }),
       });
-      
+
       const data = await res.json();
-      
+
       if (data.success) {
         alert("Profile saved successfully!");
         setIsEditing(false);
@@ -224,7 +236,7 @@ export default function DoctorProfile() {
                     👤 Personal Information
                   </h2>
                   <div className="grid grid-cols-1 gap-y-4 text-gray-300 sm:grid-cols-2">
-                    {renderField("Full Name", formData.name, true)}
+                    {renderField("Full Name", "Dr. " + formData.name, true)}
                     {renderField("Email", formData.email)}
                     {renderField("Gender", formData.gender)}
                     {renderField("Age", formData.age)}
@@ -444,7 +456,7 @@ export default function DoctorProfile() {
                     <button
                       type="button"
                       onClick={addHospital}
-                      className="flex items-center gap-1 text-cyan-400 hover:text-cyan-300 transition text-sm"
+                      className="cursor-pointer flex items-center gap-1 text-cyan-400 hover:text-cyan-300 transition text-sm"
                     >
                       <Plus size={16} /> Add Hospital
                     </button>
@@ -461,7 +473,7 @@ export default function DoctorProfile() {
                           setDeleteIndex(index);
                           setShowDeleteConfirm(true);
                         }}
-                        className="absolute top-2 right-2 text-red-400 hover:text-red-300 transition"
+                        className="cursor-pointer absolute top-2 right-2 text-red-400 hover:text-red-300 transition"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -530,7 +542,7 @@ export default function DoctorProfile() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex-1 bg-cyan-500 text-black font-semibold py-2 rounded-md hover:bg-cyan-400 transition flex items-center justify-center gap-2"
+                    className="cursor-pointer flex-1 bg-cyan-500 text-black font-semibold py-2 rounded-md hover:bg-cyan-400 transition flex items-center justify-center gap-2"
                   >
                     {loading ? (
                       <>
@@ -549,7 +561,7 @@ export default function DoctorProfile() {
                       fetchDoctorProfile();
                       setIsEditing(false);
                     }}
-                    className="flex-1 bg-gray-800 text-gray-300 font-semibold py-2 rounded-md hover:bg-gray-700 transition"
+                    className="cursor-pointer flex-1 bg-gray-800 text-gray-300 font-semibold py-2 rounded-md hover:bg-gray-700 transition"
                   >
                     Cancel
                   </button>

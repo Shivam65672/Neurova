@@ -5,7 +5,14 @@ import BPPrediction from "@/model/prescriptionModel";
 
 export async function POST(req) {
   try {
-    await connectDB();
+    const isConnected = await connectDB();
+    if (!isConnected) {
+      return NextResponse.json({
+        success: true,
+        data: [],
+        message: "Database is currently unavailable. Please try again later.",
+      });
+    }
 
     const body = await req.json();
     const { clerkId } = body;

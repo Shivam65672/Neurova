@@ -1,36 +1,45 @@
+import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import userModel from "@/model/userModel";
 
 // ✅ GET: Fetch profile by Clerk ID
 export async function GET(req) {
   try {
-    await connectDB();
+    const isConnected = await connectDB();
+    if (!isConnected) {
+      return NextResponse.json(null, { status: 200 });
+    }
+
     const { searchParams } = new URL(req.url);
     const clerkUserId = searchParams.get("clerkUserId");
 
     if (!clerkUserId)
-      return new Response(JSON.stringify({ error: "Missing clerkUserId" }), { status: 400 });
+      return NextResponse.json({ error: "Missing clerkUserId" }, { status: 400 });
 
     const profile = await userModel.findOne({ clerkUserId });
     if (!profile)
-      return new Response(JSON.stringify({ message: "Profile not found" }), { status: 404 });
+      return NextResponse.json({ message: "Profile not found" }, { status: 404 });
 
-    return new Response(JSON.stringify(profile), { status: 200 });
+    return NextResponse.json(profile, { status: 200 });
   } catch (error) {
     console.error("GET /api/user/profile Error:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
 // ✅ POST: Create or Update Profile
 export async function POST(req) {
   try {
-    await connectDB();
+    const isConnected = await connectDB();
+    if (!isConnected) {
+      return NextResponse.json({ error: "Database is currently unavailable." }, { status: 503 });
+    }
+
     const data = await req.json();
     const { clerkUserId } = data;
 
     if (!clerkUserId)
-      return new Response(JSON.stringify({ error: "Missing clerkUserId" }), { status: 400 });
+      return NextResponse.json({ error: "Missing clerkUserId" }, { status: 400 });
 
     // ✅ Auto-calculate BMI
     if (data.height && data.weight) {
@@ -68,9 +77,9 @@ export async function POST(req) {
       profile = await userModel.create(data);
     }
 
-    return new Response(JSON.stringify(profile), { status: 200 });
+    return NextResponse.json(profile, { status: 200 });
   } catch (error) {
     console.error("POST /api/user/profile Error:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

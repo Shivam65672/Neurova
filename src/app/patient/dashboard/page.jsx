@@ -14,6 +14,7 @@ export default function PatientDashboard() {
   const [pendingMedications, setPendingMedications] = useState([]);
   const [recentReadings, setRecentReadings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [latestMedication, setLatestMedication] = useState(null);
 
   const { user } = useUser();
 
@@ -58,8 +59,16 @@ export default function PatientDashboard() {
       const prescriptionData = await prescriptionRes.json();
 
       if (prescriptionData.success) {
+        // Get all active prescriptions
         const active = prescriptionData.data.filter((p) => p.isActive);
         setPendingMedications(active);
+        
+        // Get the latest approved prescription
+        const approved = prescriptionData.data
+          .filter(p => p.prescriptionStatus === 'approved')
+          .sort((a, b) => new Date(b.approvedAt || b.datePredicted) - new Date(a.approvedAt || a.datePredicted));
+        
+        setLatestMedication(approved.length > 0 ? approved[0] : null);
       }
 
     }
@@ -139,17 +148,10 @@ export default function PatientDashboard() {
 
     : null;
 
-
-  const latestMedication = [...pendingMedications].sort(
-    (a, b) =>
-      new Date(b.approvedAt || b.createdAt) -
-      new Date(a.approvedAt || a.createdAt)
-  )[0];
-
   const nextAppointment = latestMedication
     ? new Date(
       new Date(
-        latestMedication.approvedAt || latestMedication.createdAt
+        latestMedication.approvedAt || latestMedication.datePredicted
       ).getTime() +
       14 * 24 * 60 * 60 * 1000
     ).toLocaleDateString("en-IN", {
@@ -246,7 +248,7 @@ export default function PatientDashboard() {
               </div>
             </div>
 
-            {/* Medications */}
+ {/* Medications */}
             <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -258,9 +260,7 @@ export default function PatientDashboard() {
                   </p>
 
                   <p className="mt-1 text-xs text-zinc-500">
-                    {pendingMedications.length === 0
-                      ? "No medications"
-                      : "No pending approval"}
+                    From current approval
                   </p>
                 </div>
                 <div className="rounded-lg bg-purple-500/10 p-3">
@@ -271,6 +271,7 @@ export default function PatientDashboard() {
               </div>
             </div>
 
+
             {/* Next Appointment */}
             <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
               <div className="flex items-center justify-between">
@@ -280,9 +281,9 @@ export default function PatientDashboard() {
                     {nextAppointment || "No upcoming appointment"}
                   </p>
 
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="mt-1 text-sm text-zinc-500">
                     {nextAppointment
-                      ? "Based on your active prescription"
+                      ? `${latestMedication?.doctorName || 'Not assigned'}`
                       : "No upcoming appointment"}
                   </p>
                 </div>
@@ -336,7 +337,7 @@ export default function PatientDashboard() {
                           No BP readings found.
                         </div>
                       ) : (
-                        recentReadings.map((reading) => (
+                        recentReadings.slice(0, 5).map((reading) => (
 
                           <div
                             key={reading._id || reading.id}
@@ -419,30 +420,42 @@ export default function PatientDashboard() {
                 </div>
               </div>
 
-              {/* Pending Medications */}
+              {/* Latest Medication */}
               <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
-                <h2 className="mb-4 text-xl font-bold text-white">Medications</h2>
-                <div className="space-y-3">
-                  {pendingMedications.map((med) => (
-                    <div key={med.id} className="rounded-lg border border-zinc-800 bg-black/50 p-3">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="font-medium text-white">{med.name}</p>
-                          <p className="text-xs text-zinc-400">Dr. {med.doctorName}</p>
-                        </div>
-                        <span className="rounded-full bg-green-500/10 px-3 py-1 text-sm font-medium text-green-400 ring-1 ring-green-500/20">
-                          {med.prescriptionStatus.charAt(0).toUpperCase() + med.prescriptionStatus.slice(1)}
-                        </span>
+                <h2 className="mb-4 text-xl font-bold text-white">Current Medication</h2>
+                {latestMedication ? (
+                  <div className="rounded-lg border border-zinc-800 bg-black/50 p-4">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="font-medium text-white">{latestMedication.doctorName || 'Not assigned'}</p>
+                        {latestMedication.approvedAt && (
+                          <p className="mt-1 text-xs text-zinc-500">
+                            Approved on: {new Date(latestMedication.approvedAt).toLocaleDateString('en-IN', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric'
+                            })}
+                          </p>
+                        )}
                       </div>
+                      <span className="rounded-full bg-green-500/10 px-3 py-1 text-sm font-medium text-green-400 ring-1 ring-green-500/20">
+                        Approved
+                      </span>
                     </div>
-                  ))}
-                  <Link
-                    href="/patient/medications"
-                    className="mt-3 block text-center text-sm text-cyan-400 hover:text-cyan-300"
-                  >
-                    View All Medications →
-                  </Link>
-                </div>
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-zinc-800 bg-black/50 p-6 text-center">
+                    <p className="text-lg text-zinc-500">💊</p>
+                    <p className="mt-2 text-sm text-zinc-400">Yet to get medication</p>
+                    <p className="mt-1 text-xs text-zinc-500">No approved prescriptions yet</p>
+                  </div>
+                )}
+                <Link
+                  href="/patient/medications"
+                  className="mt-4 block text-center text-sm text-cyan-400 hover:text-cyan-300"
+                >
+                  View All Medications →
+                </Link>
               </div>
             </div>
           </div>

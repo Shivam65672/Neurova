@@ -18,6 +18,88 @@ const SymptomSchema = new mongoose.Schema({
 const SymptomModel =
   mongoose.models.Symptom || mongoose.model("Symptom", SymptomSchema);
 
+const ALLOWED_STAGES = [
+  "normal",
+  "elevated",
+  "hypertension stage 1",
+  "hypertension stage 2",
+  "hypertensive crisis",
+];
+
+function normalizeTextValue(value, fallback = "") {
+  if (value == null) return fallback;
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed || fallback;
+  }
+
+  if (Array.isArray(value)) {
+    const flattened = value
+      .map((item) => normalizeTextValue(item, ""))
+      .filter(Boolean);
+    return flattened.join("\n") || fallback;
+  }
+
+  if (typeof value === "object") {
+    if (Array.isArray(value.recommendations)) {
+      return normalizeTextValue(value.recommendations, fallback);
+    }
+    if (Array.isArray(value.instructions)) {
+      return normalizeTextValue(value.instructions, fallback);
+    }
+    if (typeof value.summary === "string") {
+      return value.summary.trim() || fallback;
+    }
+    if (typeof value.details === "string") {
+      return value.details.trim() || fallback;
+    }
+
+    const entries = Object.entries(value)
+      .map(([key, entryValue]) => {
+        const normalizedEntry = normalizeTextValue(entryValue, "");
+        return normalizedEntry ? `${key}: ${normalizedEntry}` : "";
+      })
+      .filter(Boolean);
+
+    return entries.join("\n") || fallback;
+  }
+
+  return String(value).trim() || fallback;
+}
+
+function normalizeMedications(value) {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => normalizeTextValue(item, "").replace(/\s+/g, " ").trim())
+      .filter(Boolean)
+      .slice(0, 3);
+  }
+
+  if (typeof value === "string") {
+    return value
+      .split(/[|,]/)
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .slice(0, 3);
+  }
+
+  return [];
+}
+
+function normalizePredictionResponse(prediction) {
+  const stage = normalizeTextValue(prediction?.stage, "").toLowerCase();
+
+  return {
+    stage: ALLOWED_STAGES.includes(stage) ? stage : "elevated",
+    top3_medications: normalizeMedications(prediction?.top3_medications),
+    diet: normalizeTextValue(prediction?.diet),
+    dosage: normalizeTextValue(prediction?.dosage),
+    usage: normalizeTextValue(prediction?.usage),
+    exercise: normalizeTextValue(prediction?.exercise),
+  };
+}
+
 function getLast7DaysReadings(clerkId) {
   const filePath = path.join(process.cwd(), "bp_readings.csv");
   if (!fs.existsSync(filePath)) return [];
@@ -49,7 +131,14 @@ const cohere = new CohereClient({
 
 export async function POST(req) {
   try {
-    await connectDB();
+    const isConnected = await connectDB();
+    if (!isConnected) {
+      return NextResponse.json(
+        { success: false, error: "Database is currently unavailable. Please try again later." },
+        { status: 503 }
+      );
+    }
+
     const body = await req.json();
     const { clerkId, symptoms: clientSymptoms } = body;
 
@@ -209,6 +298,8 @@ Respond **ONLY** in the following EXACT JSON format:
       );
     }
 
+    const normalizedPrediction = normalizePredictionResponse(prediction);
+
     await BPPrediction.updateMany(
       { clerkId },
       { isActive: false }
@@ -219,12 +310,14 @@ Respond **ONLY** in the following EXACT JSON format:
       patientName: profile.name,
       patientAge: profile.age,
 
-      stage: prediction.stage,
-      medications: prediction.top3_medications,
-      diet: prediction.diet,
-      dosage: prediction.dosage,
-      usage: prediction.usage,
-      exercise: prediction.exercise,
+      stage: normalizedPrediction.stage,
+      medications: normalizedPrediction.top3_medications.length
+        ? normalizedPrediction.top3_medications
+        : ["Consult your doctor"],
+      diet: normalizedPrediction.diet || "Lifestyle guidance will be shared by your doctor.",
+      dosage: normalizedPrediction.dosage || "Follow your doctor’s guidance.",
+      usage: normalizedPrediction.usage || "Take medications as directed by your doctor.",
+      exercise: normalizedPrediction.exercise || "Follow a light activity plan as advised by your doctor.",
 
       prescriptionStatus: "pending",
 

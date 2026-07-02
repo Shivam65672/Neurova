@@ -464,7 +464,7 @@ export default function ReportPage() {
                       <div className="w-6 h-6 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0">
                         <span className="w-2.5 h-2.5 bg-purple-400 rounded-full"></span>
                       </div>
-                      <span className="text-zinc-200 font-medium">{item}</span>
+                      <span className="text-zinc-200 font-medium">{item.charAt(0).toUpperCase() + item.slice(1)}</span>
                     </li>
                   ))}
                 </ul>

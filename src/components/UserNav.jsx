@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { usePatientProfile } from '@/hooks/usePatientProfile';
+import { SignOutButton } from '@clerk/nextjs';
 
 export default function UserNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -26,7 +27,7 @@ export default function UserNav() {
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="group flex items-center space-x-3 transition-all">
+            <div className="group flex items-center space-x-3 transition-all">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-cyan-500 to-teal-600 shadow-lg shadow-cyan-500/25 transition-all group-hover:shadow-cyan-500/40 group-hover:scale-105">
                 <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -40,7 +41,7 @@ export default function UserNav() {
                   Patient Portal
                 </span>
               </div>
-            </Link>
+            </div>
           </div>
 
           {/* Desktop Navigation */}
@@ -77,6 +78,11 @@ export default function UserNav() {
                 <p className="text-xs text-zinc-500">Patient</p>
               </div>
             </Link>
+            <SignOutButton>
+              <button className="rounded-xl px-4 py-2 text-sm font-medium text-zinc-400 transition-all hover:bg-red-500/20 hover:text-red-400">
+                Sign Out
+              </button>
+            </SignOutButton>
           </div>
 
           {/* Mobile menu button */}
@@ -134,6 +140,14 @@ export default function UserNav() {
                 </Link>
               );
             })}
+            <SignOutButton>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-base font-medium text-red-400 transition-all hover:bg-red-500/20"
+              >
+                <span>Sign Out</span>
+              </button>
+            </SignOutButton>
           </div>
         </div>
       )}

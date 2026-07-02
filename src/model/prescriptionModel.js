@@ -45,8 +45,7 @@ const BPPredictionSchema = new mongoose.Schema(
       enum: [
         "pending",
         "approved",
-        "rejected",
-        "dispensed"
+        "rejected"
       ],
       default: "pending",
     },
@@ -57,7 +56,18 @@ const BPPredictionSchema = new mongoose.Schema(
     },
     doctorName: {
       type: String,
-      default: null,
+      default: '',
+    },
+    doctorId: {
+      type: String,
+      default: '',
+    },
+    rejectedAt: {
+      type: Date,
+    },
+    rejectionReason: {
+      type: String,
+      default: '',
     },
 
     approvedAt: {

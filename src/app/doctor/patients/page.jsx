@@ -11,6 +11,18 @@ export default function DoctorPatients() {
   const [filter, setFilter] = useState('all');
   const router = useRouter();
 
+  // ✅ Scroll to top with delay to ensure content is loaded
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+    if (!loading) {
+      window.scrollTo(0, 0);
+    }
+    return () => clearTimeout(timer);
+  }, [loading]);
+
   useEffect(() => {
     const fetchPatients = async () => {
       try {
@@ -22,7 +34,7 @@ export default function DoctorPatients() {
         console.log("data", data.data)
         if (data.success) {
           const mappedPatients = data.data.map((p, index) => ({
-            id: p.id, // Use the actual MongoDB _id
+            id: p.id || p._id, // Use the actual MongoDB _id
             clerkId: p.clerkId,
             name: p.patientName,
             age: p.patientAge,
@@ -53,20 +65,20 @@ export default function DoctorPatients() {
   }, []);
 
   const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case 'pending':
         return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
       case 'approved':
         return 'text-green-400 bg-green-500/10 border-green-500/20';
-      case 'dispensed':
-        return 'text-blue-400 bg-blue-500/10 border-blue-500/20';
+      case 'rejected':
+        return 'text-red-400 bg-red-500/10 border-red-500/20';
       default:
         return 'text-zinc-400 bg-zinc-500/10 border-zinc-500/20';
     }
   };
 
   const getStageColor = (stage) => {
-    switch (stage.toLowerCase()) {
+    switch (stage?.toLowerCase()) {
       case 'normal':
         return 'text-green-400 bg-green-500/10 border-green-500/20';
       case 'elevated':
@@ -159,15 +171,15 @@ export default function DoctorPatients() {
               </div>
             </div>
 
-            <div className="rounded-xl border border-zinc-800 bg-linear-to-br from-blue-900/20 to-zinc-800/30 p-6">
+            <div className="rounded-xl border border-zinc-800 bg-linear-to-br from-red-900/20 to-zinc-800/30 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-zinc-400">Dispensed</p>
-                  <p className="text-3xl font-bold text-blue-400 mt-1">
-                    {patients.filter(p => p.prescriptionStatus === 'dispensed').length}
+                  <p className="text-sm text-zinc-400">Rejected</p>
+                  <p className="text-3xl font-bold text-red-400 mt-1">
+                    {patients.filter(p => p.prescriptionStatus === 'rejected').length}
                   </p>
                 </div>
-                <div className="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center">
+                <div className="h-12 w-12 rounded-full bg-red-500/10 flex items-center justify-center">
                   <span className="text-2xl">💊</span>
                 </div>
               </div>
@@ -176,18 +188,17 @@ export default function DoctorPatients() {
 
           {/* Filter Tabs */}
           <div className="mb-6 overflow-x-auto border-b border-zinc-800">
-            <nav className="-mb-px flex min-w-max space-x-4 sm:space-x-8">
-              {['all', 'pending', 'approved', 'dispensed'].map((status) => (
+            <nav className="-mb-px flex flex-wrap space-x-4 sm:space-x-8">
+              {['all', 'pending', 'approved', 'rejected'].map((status) => (
                 <button
                   key={status}
                   onClick={() => setFilter(status)}
-                  className={`whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors capitalize ${
-                    filter === status
-                      ? 'border-cyan-500 text-cyan-400'
-                      : 'border-transparent text-zinc-400 hover:border-zinc-700 hover:text-zinc-300'
-                  }`}
+                  className={`whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors $capitalize ${filter === status
+                    ? 'cursor-pointer border-cyan-500 text-cyan-400'
+                    : 'cursor-pointer border-transparent text-zinc-400 hover:border-zinc-700 hover:text-zinc-300'
+                    }`}
                 >
-                  {status} {status !== 'all' && `(${patients.filter(p => p.prescriptionStatus === status).length})`}
+                  {status.charAt(0).toUpperCase() + status.slice(1)} {status !== 'all' && `(${patients.filter(p => p.prescriptionStatus === status).length})`}
                 </button>
               ))}
             </nav>
@@ -211,7 +222,7 @@ export default function DoctorPatients() {
                     {/* Left Section - Patient Info */}
                     <div className="flex items-start space-x-4 flex-1 min-w-0">
                       <div className="h-14 w-14 rounded-full bg-linear-to-br from-cyan-500 to-teal-600 flex items-center justify-center text-white text-xl font-bold shrink-0">
-                        {patient.name.charAt(0).toUpperCase()}
+                        {patient.name?.charAt(0).toUpperCase() || 'P'}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
@@ -219,17 +230,17 @@ export default function DoctorPatients() {
                           <span className="text-sm text-zinc-500">•</span>
                           <span className="text-sm text-zinc-400">{patient.age} years</span>
                           <span className={`inline-flex rounded-full border px-3 py-0.5 text-xs font-medium ${getStageColor(patient.stage)}`}>
-                            {patient.stage.charAt(0).toUpperCase() + patient.stage.slice(1)}
+                            {patient.stage?.charAt(0).toUpperCase() + patient.stage?.slice(1)}
                           </span>
                         </div>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                           {/* Medications Summary */}
                           <div className="space-y-1">
                             <p className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Medications</p>
                             <p className="text-sm text-white font-medium line-clamp-2">
-                              {patient.medications.slice(0, 2).join(', ')}
-                              {patient.medications.length > 2 && (
+                              {patient.medications?.slice(0, 2).join(', ')}
+                              {patient.medications?.length > 2 && (
                                 <span className="text-cyan-400"> +{patient.medications.length - 2} more</span>
                               )}
                             </p>
@@ -253,12 +264,12 @@ export default function DoctorPatients() {
                     {/* Right Section - Status & Action */}
                     <div className="flex flex-row items-center justify-between gap-3 sm:flex-col sm:items-end sm:ml-6">
                       <span className={`inline-flex rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ${getStatusColor(patient.prescriptionStatus)}`}>
-                        {patient.prescriptionStatus}
+                        {patient.prescriptionStatus || 'pending'}
                       </span>
-                      
+
                       <button
                         onClick={() => handleReview(patient.id)}
-                        className="inline-flex items-center space-x-2 rounded-lg bg-linear-to-r from-cyan-600 to-teal-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105 transition-all duration-200"
+                        className="cursor-pointer inline-flex items-center space-x-2 rounded-lg bg-linear-to-r from-cyan-600 to-teal-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105 transition-all duration-200"
                       >
                         <span>Review Details</span>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

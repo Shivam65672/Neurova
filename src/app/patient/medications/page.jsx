@@ -210,7 +210,7 @@ export default function MedicationsPage() {
                         </span>
                       </div>
                       <p className="mt-1 text-sm text-zinc-400">
-                        Stage: <span className="font-semibold text-cyan-400">{prescription.stage}</span>
+                        Stage: <span className="font-semibold text-cyan-400">{prescription.stage.charAt(0).toUpperCase() + prescription.stage.slice(1)}</span>
                       </p>
                       <p className="mt-1 text-sm text-zinc-400">
                         Doctor:
@@ -405,7 +405,7 @@ export default function MedicationsPage() {
                           </span>
                         </p>
                         <p className="mt-1 text-sm text-zinc-400">
-                          Stage: <span className="font-semibold text-cyan-400">{item.stage}</span>
+                          Stage: <span className="font-semibold text-cyan-400">{item.stage.charAt(0).toUpperCase() + item.stage.slice(1)}</span>
                         </p>
                         <p className="mt-1 text-sm text-zinc-400">
                           Doctor:

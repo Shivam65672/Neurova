@@ -1,9 +1,8 @@
-// app/api/doctor/profile/route.js
+import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import DoctorProfile from "@/model/doctorModel";
-import { NextResponse } from "next/server";
 
-// Helper function to ensure all fields exist with defaults
+// Helper function to ensure all fields exist
 const ensureCompleteProfile = (profileData) => {
   return {
     clerkUserId: profileData.clerkUserId || "",
@@ -18,12 +17,7 @@ const ensureCompleteProfile = (profileData) => {
     experienceYears: profileData.experienceYears || 0,
     currentHospital: profileData.currentHospital || "",
     hospitalExperience: Array.isArray(profileData.hospitalExperience) 
-      ? profileData.hospitalExperience.map(exp => ({
-          hospitalName: exp.hospitalName || "",
-          yearsWorked: exp.yearsWorked || 0,
-          position: exp.position || "",
-          department: exp.department || "",
-        }))
+      ? profileData.hospitalExperience 
       : [],
   };
 };
@@ -31,6 +25,7 @@ const ensureCompleteProfile = (profileData) => {
 export async function GET(req) {
   try {
     await connectDB();
+    
     const { searchParams } = new URL(req.url);
     const clerkUserId = searchParams.get("clerkUserId");
 
@@ -41,7 +36,7 @@ export async function GET(req) {
       );
     }
 
-    let profile = await DoctorProfile.findOne({ clerkUserId });
+    const profile = await DoctorProfile.findOne({ clerkUserId });
     
     if (!profile) {
       return NextResponse.json(
@@ -50,11 +45,8 @@ export async function GET(req) {
       );
     }
 
-    // Convert to plain object and ensure all fields exist
     const profileObj = profile.toObject ? profile.toObject() : profile;
     const completeProfile = ensureCompleteProfile(profileObj);
-
-    console.log("Fetched profile:", completeProfile); // Debug log
 
     return NextResponse.json(
       { success: true, profile: completeProfile },
@@ -96,12 +88,7 @@ export async function POST(req) {
       experienceYears: Number(data.experienceYears) || 0,
       currentHospital: data.currentHospital || "",
       hospitalExperience: Array.isArray(data.hospitalExperience) 
-        ? data.hospitalExperience.map(exp => ({
-            hospitalName: exp.hospitalName || "",
-            yearsWorked: Number(exp.yearsWorked) || 0,
-            position: exp.position || "",
-            department: exp.department || "",
-          }))
+        ? data.hospitalExperience 
         : [],
     };
 
@@ -109,17 +96,12 @@ export async function POST(req) {
     let profile = await DoctorProfile.findOne({ clerkUserId });
     
     if (profile) {
-      // Update existing profile
       Object.assign(profile, preparedData);
       await profile.save();
-      console.log("Updated profile:", profile); // Debug log
     } else {
-      // Create new profile
       profile = await DoctorProfile.create(preparedData);
-      console.log("Created profile:", profile); // Debug log
     }
 
-    // Return complete profile
     const profileObj = profile.toObject ? profile.toObject() : profile;
     const completeProfile = ensureCompleteProfile(profileObj);
 

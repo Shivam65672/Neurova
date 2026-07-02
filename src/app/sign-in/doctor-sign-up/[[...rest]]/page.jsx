@@ -9,7 +9,7 @@ export default function DoctorSignUp() {
           path="/doctor-sign-up"
           routing="path"
           signInUrl="/doctor-sign-in"
-          afterSignUpUrl="/doctor/home"
+          afterSignUpUrl="/doctor/dashboard"
         />
       </div>
     </ClerkProvider>

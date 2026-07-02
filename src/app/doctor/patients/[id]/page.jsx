@@ -7,7 +7,6 @@ import DocFooter from '@/components/DocFooter';
 import { useDoctorProfile } from '@/hooks/useDoctorProfile';
 import { useUser } from "@clerk/nextjs";
 
-
 export default function PrescriptionReview() {
   const { user } = useUser();
   const params = useParams();
@@ -17,7 +16,21 @@ export default function PrescriptionReview() {
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
   const { profile: doctorProfile, loading: doctorLoading } = useDoctorProfile();
+
+  // ✅ Scroll to top with delay to ensure content is loaded
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+    if (!loading) {
+      window.scrollTo(0, 0);
+    }
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   useEffect(() => {
     const fetchPrescription = async () => {
@@ -65,16 +78,19 @@ export default function PrescriptionReview() {
         },
         body: JSON.stringify({
           id: prescription._id,
-          prescriptionStatus: "approved",
-          doctorName: user.fullName, // or doctor's name
+          ...editedData,
+          prescriptionStatus: prescription.prescriptionStatus,
+          doctorName: doctorProfile?.name || user?.fullName || 'Verified Doctor',
         }),
       });
 
       const data = await res.json();
       if (data.success) {
-        setPrescription(editedData);
+        setPrescription(data.data);
+        setEditedData(data.data);
         setIsEditing(false);
         alert('Prescription updated successfully!');
+        router.refresh();
       } else {
         alert('Failed to update prescription');
       }
@@ -95,22 +111,15 @@ export default function PrescriptionReview() {
         body: JSON.stringify({
           id: params.id,
           prescriptionStatus: 'approved',
-          doctorName: doctorProfile?.name || 'Verified Doctor',
+          doctorName: doctorProfile?.name || user?.fullName || 'Verified Doctor',
+          doctorId: user?.id || '',
         }),
       });
 
       const data = await res.json();
       if (data.success) {
-        setPrescription({
-          ...prescription,
-          prescriptionStatus: 'approved',
-          doctorName: doctorProfile?.name || 'Verified Doctor',
-        });
-        setEditedData({
-          ...editedData,
-          prescriptionStatus: 'approved',
-          doctorName: doctorProfile?.name || 'Verified Doctor',
-        });
+        setPrescription(data.data);
+        setEditedData(data.data);
         alert('Prescription approved successfully!');
         router.push('/doctor/patients');
       } else {
@@ -119,6 +128,55 @@ export default function PrescriptionReview() {
     } catch (err) {
       console.error('Error approving prescription:', err);
       alert('Error approving prescription');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleReject = async () => {
+    if (!rejectReason.trim()) {
+      alert('Please provide a reason for rejection');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      // Get doctor name from profile or user
+      const doctorName = doctorProfile?.name || user?.fullName || 'Verified Doctor';
+      const doctorId = user?.id || '';
+
+      const rejectData = {
+        id: params.id,
+        prescriptionStatus: 'rejected',
+        doctorName: doctorName, // Make sure this is sent
+        doctorId: doctorId,
+        rejectionReason: rejectReason.trim(),
+      };
+
+      console.log("📤 Sending reject data:", rejectData);
+
+      const res = await fetch('/api/update-prescription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(rejectData),
+      });
+
+      const data = await res.json();
+      console.log("📥 Reject response:", data);
+
+      if (data.success) {
+        setPrescription(data.data);
+        setEditedData(data.data);
+        alert('Prescription rejected successfully!');
+        setShowRejectModal(false);
+        setRejectReason('');
+        router.push('/doctor/patients');
+      } else {
+        alert('Failed to reject prescription: ' + (data.error || 'Unknown error'));
+      }
+    } catch (err) {
+      console.error('❌ Error rejecting prescription:', err);
+      alert('Error rejecting prescription');
     } finally {
       setSaving(false);
     }
@@ -139,8 +197,8 @@ export default function PrescriptionReview() {
         return 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
       case 'approved':
         return 'text-green-400 bg-green-500/10 border-green-500/20';
-      case 'dispensed':
-        return 'text-blue-400 bg-blue-500/10 border-blue-500/20';
+      case 'rejected':
+        return 'text-red-400 bg-red-500/10 border-red-500/20';
       default:
         return 'text-zinc-400 bg-zinc-500/10 border-zinc-500/20';
     }
@@ -163,7 +221,16 @@ export default function PrescriptionReview() {
     }
   };
 
-  if (loading) {
+  const formatDate = (date) => {
+    if (!date) return 'Not specified';
+    return new Date(date).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  if (loading || doctorLoading) {
     return (
       <>
         <DocNav />
@@ -222,7 +289,7 @@ export default function PrescriptionReview() {
                 <p className="mt-2 text-zinc-400">Review and edit AI-generated prescription details</p>
               </div>
               <span className={`inline-flex w-fit rounded-full border px-4 py-2 text-sm font-semibold uppercase tracking-wider ${getStatusColor(editedData?.prescriptionStatus)}`}>
-                {editedData?.prescriptionStatus}
+                {editedData?.prescriptionStatus || 'pending'}
               </span>
             </div>
           </div>
@@ -231,7 +298,7 @@ export default function PrescriptionReview() {
           <div className="mb-6 rounded-xl border border-zinc-800 bg-linear-to-br from-zinc-900/50 to-zinc-800/30 p-6">
             <div className="flex items-center space-x-4">
               <div className="h-16 w-16 rounded-full bg-linear-to-br from-cyan-500 to-teal-600 flex items-center justify-center text-white text-2xl font-bold">
-                {prescription.patientName.charAt(0).toUpperCase()}
+                {prescription.patientName?.charAt(0).toUpperCase() || 'P'}
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-white">{prescription.patientName}</h2>
@@ -240,14 +307,10 @@ export default function PrescriptionReview() {
                     <span className="text-zinc-500">Age:</span> {prescription.patientAge} years
                   </div>
                   <div className="text-zinc-400">
-                    <span className="text-zinc-500">Predicted:</span> {new Date(prescription.datePredicted).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })}
+                    <span className="text-zinc-500">Predicted:</span> {formatDate(prescription.datePredicted)}
                   </div>
                   <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${getStageColor(prescription.stage)}`}>
-                    {prescription.stage.charAt(0).toUpperCase() + prescription.stage.slice(1)}
+                    {prescription.stage?.charAt(0).toUpperCase() + prescription.stage?.slice(1)}
                   </span>
                 </div>
               </div>
@@ -270,14 +333,14 @@ export default function PrescriptionReview() {
                 {isEditing ? (
                   <input
                     type="text"
-                    value={editedData.medications.join(', ')}
+                    value={editedData.medications?.join(', ') || ''}
                     onChange={(e) => handleMedicationsChange(e.target.value)}
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-3 text-white placeholder-zinc-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
                     placeholder="e.g., Amlodipine 5mg, Lisinopril 10mg"
                   />
                 ) : (
                   <div className="flex flex-wrap gap-2">
-                    {prescription.medications.map((med, idx) => (
+                    {prescription.medications?.map((med, idx) => (
                       <span key={idx} className="inline-flex items-center rounded-full bg-cyan-500/10 border border-cyan-500/20 px-4 py-2 text-sm font-medium text-cyan-400">
                         💊 {med}
                       </span>
@@ -291,7 +354,7 @@ export default function PrescriptionReview() {
                 <label className="block text-sm font-medium text-zinc-400 mb-2">Dosage Instructions</label>
                 {isEditing ? (
                   <textarea
-                    value={editedData.dosage}
+                    value={editedData.dosage || ''}
                     onChange={(e) => handleInputChange('dosage', e.target.value)}
                     rows={3}
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-3 text-white placeholder-zinc-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
@@ -299,7 +362,7 @@ export default function PrescriptionReview() {
                   />
                 ) : (
                   <div className="rounded-lg border border-zinc-800 bg-black/50 px-4 py-3">
-                    <p className="text-white whitespace-pre-wrap">{prescription.dosage}</p>
+                    <p className="text-white whitespace-pre-wrap">{prescription.dosage || 'Not specified'}</p>
                   </div>
                 )}
               </div>
@@ -309,7 +372,7 @@ export default function PrescriptionReview() {
                 <label className="block text-sm font-medium text-zinc-400 mb-2">Usage Guidelines</label>
                 {isEditing ? (
                   <textarea
-                    value={editedData.usage}
+                    value={editedData.usage || ''}
                     onChange={(e) => handleInputChange('usage', e.target.value)}
                     rows={3}
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-3 text-white placeholder-zinc-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
@@ -317,7 +380,7 @@ export default function PrescriptionReview() {
                   />
                 ) : (
                   <div className="rounded-lg border border-zinc-800 bg-black/50 px-4 py-3">
-                    <p className="text-white whitespace-pre-wrap">{prescription.usage}</p>
+                    <p className="text-white whitespace-pre-wrap">{prescription.usage || 'Not specified'}</p>
                   </div>
                 )}
               </div>
@@ -327,7 +390,7 @@ export default function PrescriptionReview() {
                 <label className="block text-sm font-medium text-zinc-400 mb-2">Dietary Recommendations</label>
                 {isEditing ? (
                   <textarea
-                    value={editedData.diet}
+                    value={editedData.diet || ''}
                     onChange={(e) => handleInputChange('diet', e.target.value)}
                     rows={4}
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-3 text-white placeholder-zinc-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
@@ -335,7 +398,7 @@ export default function PrescriptionReview() {
                   />
                 ) : (
                   <div className="rounded-lg border border-zinc-800 bg-black/50 px-4 py-3">
-                    <p className="text-white whitespace-pre-wrap">{prescription.diet}</p>
+                    <p className="text-white whitespace-pre-wrap">{prescription.diet || 'Not specified'}</p>
                   </div>
                 )}
               </div>
@@ -345,7 +408,7 @@ export default function PrescriptionReview() {
                 <label className="block text-sm font-medium text-zinc-400 mb-2">Exercise Recommendations</label>
                 {isEditing ? (
                   <textarea
-                    value={editedData.exercise}
+                    value={editedData.exercise || ''}
                     onChange={(e) => handleInputChange('exercise', e.target.value)}
                     rows={4}
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-3 text-white placeholder-zinc-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
@@ -353,10 +416,34 @@ export default function PrescriptionReview() {
                   />
                 ) : (
                   <div className="rounded-lg border border-zinc-800 bg-black/50 px-4 py-3">
-                    <p className="text-white whitespace-pre-wrap">{prescription.exercise}</p>
+                    <p className="text-white whitespace-pre-wrap">{prescription.exercise || 'Not specified'}</p>
                   </div>
                 )}
               </div>
+
+              {/* Approval Info - Show if approved */}
+              {prescription.prescriptionStatus === 'approved' && (
+                <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-4">
+                  <h4 className="text-sm font-semibold text-green-400 mb-1">Approved By</h4>
+                  <p className="text-sm text-green-300/80">{(('Dr. ' + prescription.doctorName) || 'Verified Doctor')}</p>
+                  <p className="text-xs text-green-400/60 mt-2">
+                    Approved on: {formatDate(prescription.approvedAt)}
+                  </p>
+                </div>
+              )}
+
+              {/* Rejection Info - Show if rejected */}
+              {prescription.prescriptionStatus === 'rejected' && (
+                <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
+                  <h4 className="text-sm font-semibold text-red-400 mb-1">Rejected By</h4>
+                  <p className="text-sm text-red-300/80">{(('Dr. ' + prescription.doctorName) || 'Verified Doctor')}</p>
+                  <h4 className="text-sm font-semibold text-red-400 mb-1 mt-3">Rejection Reason</h4>
+                  <p className="text-sm text-red-300/80">{prescription.rejectionReason || 'No reason provided'}</p>
+                  <p className="text-xs text-red-400/60 mt-2">
+                    Rejected on: {formatDate(prescription.rejectedAt)}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -365,38 +452,81 @@ export default function PrescriptionReview() {
             <div className="flex flex-wrap items-center gap-3">
               {!isEditing ? (
                 <>
-                  <button
-                    onClick={handleEdit}
-                    className="inline-flex items-center space-x-2 rounded-lg border border-cyan-500 bg-cyan-500/10 px-6 py-3 text-sm font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-all duration-200"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    <span>Edit Prescription</span>
-                  </button>
+                  {/* Edit button - Only for pending and approved prescriptions */}
+                  {prescription.prescriptionStatus !== 'rejected' && (
+                    <button
+                      onClick={handleEdit}
+                      className="cursor-pointer inline-flex items-center space-x-2 rounded-lg border border-cyan-500 bg-cyan-500/10 px-6 py-3 text-sm font-semibold text-cyan-400 hover:bg-cyan-500/20 transition-all duration-200"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      <span>Edit Prescription</span>
+                    </button>
+                  )}
+
+                  {/* Approve button - Only for pending prescriptions */}
                   {prescription.prescriptionStatus === 'pending' && (
                     <button
                       onClick={handleApprove}
                       disabled={saving}
-                      className="inline-flex items-center space-x-2 rounded-lg bg-linear-to-r from-green-600 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-green-500/20 hover:shadow-green-500/40 hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="cursor-pointer inline-flex items-center space-x-2 rounded-lg bg-linear-to-r from-green-600 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-green-500/20 hover:shadow-green-500/40 hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {saving ? (
                         <>
                           <div className="h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent"></div>
-                          <span>Approving...</span>
+                          <span>Processing...</span>
                         </>
                       ) : (
                         <>
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
-                          <span>Approve Prescription</span>
+                          <span>Approve</span>
                         </>
                       )}
                     </button>
                   )}
+
+                  {/* Reject button - Only for pending prescriptions */}
+                  {prescription.prescriptionStatus === 'pending' && (
+                    <button
+                      onClick={() => setShowRejectModal(true)}
+                      disabled={saving}
+                      className="cursor-pointer inline-flex items-center space-x-2 rounded-lg bg-linear-to-r from-red-600 to-rose-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-red-500/20 hover:shadow-red-500/40 hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      <span>Reject</span>
+                    </button>
+                  )}
+
+                  {/* Status badges for non-pending prescriptions */}
+                  {prescription.prescriptionStatus === 'approved' && (
+                    <div className="rounded-lg border border-green-500/20 bg-green-500/10 px-4 py-2">
+                      <p className="text-sm text-green-400 flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        This prescription has been approved
+                      </p>
+                    </div>
+                  )}
+
+                  {prescription.prescriptionStatus === 'rejected' && (
+                    <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2">
+                      <p className="text-sm text-red-400 flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        This prescription has been rejected
+                      </p>
+                    </div>
+                  )}
                 </>
               ) : (
+                // Edit Mode
                 <>
                   <button
                     onClick={handleSave}
@@ -432,7 +562,7 @@ export default function PrescriptionReview() {
             </div>
           </div>
 
-          {/* Warning Note */}
+          {/* Warning Note - Only for pending */}
           {prescription.prescriptionStatus === 'pending' && (
             <div className="mt-6 rounded-lg border border-yellow-500/20 bg-yellow-500/10 p-4">
               <div className="flex items-start space-x-3">
@@ -442,7 +572,7 @@ export default function PrescriptionReview() {
                 <div className="flex-1">
                   <h4 className="text-sm font-semibold text-yellow-400">AI-Generated Prescription</h4>
                   <p className="mt-1 text-sm text-yellow-300/80">
-                    This prescription was generated by AI. Please review all details carefully before approving. You can edit any field if needed.
+                    This prescription was generated by AI. Please review all details carefully before approving or rejecting. You can edit any field if needed.
                   </p>
                 </div>
               </div>
@@ -450,6 +580,77 @@ export default function PrescriptionReview() {
           )}
         </div>
       </div>
+
+      {/* Reject Modal */}
+      {showRejectModal && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-zinc-900 rounded-xl border border-zinc-800 max-w-md w-full p-6">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h3 className="text-xl font-semibold text-white">Reject Prescription</h3>
+                <p className="text-sm text-zinc-400 mt-1">
+                  Please provide a reason for rejecting this prescription
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowRejectModal(false);
+                  setRejectReason('');
+                }}
+                className="cursor-pointer text-zinc-400 hover:text-white transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-zinc-400 mb-2">
+                Rejection Reason <span className="text-red-400">*</span>
+              </label>
+              <textarea
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                rows={4}
+                className="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-3 text-white placeholder-zinc-500 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20"
+                placeholder="e.g., Incorrect dosage, Medication not suitable, Missing information..."
+                autoFocus
+              />
+              <p className="text-xs text-zinc-500 mt-1">
+                This reason will be visible to the patient
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowRejectModal(false);
+                  setRejectReason('');
+                }}
+                className="cursor-pointer flex-1 px-4 py-2.5 rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleReject}
+                disabled={saving || !rejectReason.trim()}
+                className="cursor-pointer flex-1 px-4 py-2.5 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {saving ? (
+                  <div className="flex items-center justify-center space-x-2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent"></div>
+                    <span>Rejecting...</span>
+                  </div>
+                ) : (
+                  'Reject Prescription'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <DocFooter />
     </>
   );
